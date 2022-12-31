@@ -10,7 +10,7 @@ gem "octokit", "~> 6.0"
 gem "rake", "~> 13.0"
 
 group :develop do
+  gem "rspec", "~> 3.12"
   gem "rubocop", "~> 1.41"
+  gem "rubocop-rspec", "~> 2.16", require: false
 end
-
-gem "minitest", "~> 5.16"
