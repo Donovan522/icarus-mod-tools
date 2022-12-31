@@ -16,5 +16,7 @@ Style/StringLiteralsInInterpolation:
 Layout/LineLength:
   Max: 160
 
-RSpec/FilePath:
-  Enabled: false
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - Guardfile
+    - spec/**/*_spec.rb
