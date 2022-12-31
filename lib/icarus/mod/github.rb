@@ -6,41 +6,49 @@ module Icarus
   module Mod
     # Helper methods for interacting with the Github API
     class Github
-      attr_reader :client
+      attr_reader :client, :resources
 
-      def initialize
+      def initialize(repo = nil)
+        self.repository = repo if repo
         @client = Octokit::Client.new(access_token: ENV.fetch("GITHUB_TOKEN"))
+        @resources = []
       end
 
-      def repo
-        raise "You must specify a repository to use" unless @repo
+      def repository
+        raise "You must specify a repository to use" unless @repository
 
-        @repo
+        @repository
       end
 
-      def repo=(repo)
-        @repo = repo.gsub(%r{https?://.*github\.com/}, "")
+      def repository=(repo)
+        @resources = [] # reset the resources cache
+        @repository = repo.gsub(%r{https?://.*github\.com/}, "")
       end
 
-      # Recursively returns all files in the repository
-      def all_files(path: nil, &block)
-        all_files = []
+      # Recursively returns all resources in the repository
+      def all_files(path: nil, cache: true, &block)
+        # If we've already been called for this repository, use the cached resources
+        use_cache = @resources.any? && cache
 
-        client.contents(repo, path: path).each do |entry|
-          return files(path: entry[:path], &block) if entry[:type] == "dir"
+        if use_cache
+          @resources.each { |file| block.call(file) } if block_given?
+        else
+          @client.contents(repository, path: path).each do |entry|
+            if entry[:type] == "dir"
+              all_files(path: entry[:path], cache: false, &block)
+              next # skip directories
+            end
 
-          if block_given?
-            block.call entry
-          else
-            all_files << entry
+            block.call(entry) if block_given?
+            @resources << entry # cache the file
           end
         end
 
-        return all_files unless block_given?
+        @resources unless block_given?
       end
 
-      def find(name)
-        all_files { |file| return file if file[:name] == name }
+      def find(pattern)
+        all_files { |file| return file if file[:name] =~ /#{pattern}/i }
       end
     end
   end

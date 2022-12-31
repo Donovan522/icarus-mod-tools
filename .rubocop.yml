@@ -20,3 +20,18 @@ Style/FrozenStringLiteralComment:
   Exclude:
     - Guardfile
     - spec/**/*_spec.rb
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Max: 10
+
+Metrics/AbcSize:
+  Max: 25
+
+Metrics/MethodLength:
+  Max: 50
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false

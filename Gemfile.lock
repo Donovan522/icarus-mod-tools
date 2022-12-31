@@ -4,6 +4,7 @@ PATH
     Icarus-Mod-Tools (0.0.1)
       google-cloud-firestore (~> 2.7)
       octokit (~> 6.0)
+      thor (~> 1.2)
 
 GEM
   remote: https://rubygems.org/
