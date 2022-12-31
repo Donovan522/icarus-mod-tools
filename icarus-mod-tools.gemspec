@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require_relative "lib/database/sync/version"
+require_relative "lib/icarus/mod/tools/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "Icarus-mod-db-sync"
-  spec.version = Icarus::Mod::Database::Sync::VERSION
+  spec.name = "Icarus-Mod-Tools"
+  spec.version = Icarus::Mod::Tools::VERSION
   spec.authors = ["Donovan Young"]
   spec.email = ["dyoung522@gmail.com"]
 
-  spec.summary = "Syncs the various Icarus Mods databases"
+  spec.summary = "Various tools for Icarus Modding"
   spec.description = spec.summary
-  spec.homepage = "https://github.com/Donovan522/icarus-mod-db-sync"
+  spec.homepage = "https://github.com/Donovan522/icarus-mod-tools"
   spec.required_ruby_version = ">= 3.0.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   end
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  spec.require_paths = ["lib", "lib/icarus/mod"]
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"

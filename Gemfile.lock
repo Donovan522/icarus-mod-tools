@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    Icarus-mod-db-sync (0.0.1)
+    Icarus-Mod-Tools (0.0.1)
       google-cloud-firestore (~> 2.7)
       octokit (~> 6.0)
 
@@ -156,7 +156,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  Icarus-mod-db-sync!
+  Icarus-Mod-Tools!
   guard (~> 2.18)
   guard-rspec (~> 4.7)
   pry (~> 0.14.1)

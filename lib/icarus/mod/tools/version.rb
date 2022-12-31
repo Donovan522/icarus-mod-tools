@@ -2,10 +2,8 @@
 
 module Icarus
   module Mod
-    module Database
-      module Sync
-        VERSION = "0.0.1"
-      end
+    module Tools
+      VERSION = "0.0.1"
     end
   end
 end

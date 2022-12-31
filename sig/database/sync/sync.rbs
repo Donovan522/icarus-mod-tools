@@ -10,10 +10,8 @@ module Icarus
       def all_files: (String) -> Array[String]
     end
 
-    module Database
-      module Sync
-        VERSION: String
-      end
+    module Tools
+      VERSION: String
     end
   end
 end

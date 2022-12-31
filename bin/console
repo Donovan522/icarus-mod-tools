@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "database/sync"
+require "icarus/mod/tools"
 require "pry"
 
 Pry.start
