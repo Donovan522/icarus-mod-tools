@@ -1,42 +1,91 @@
 # frozen_string_literal: true
 
 require "tools/modinfo_sync"
+require "tools/mod_sync"
 
 module Icarus
   module Mod
     module CLI
       # Sync CLI command definitions
       class Sync < SubCommandBase
-        desc "modinfo", "Reads from 'meta/repos/list' and Syncs any modinfo files we find (github only for now)"
-        method_option :verbose,
-                      aliases: "-v",
-                      type: :boolean,
-                      repeatable: true,
-                      default: [],
-                      desc: "Verbose output (default false). May be repeated for more verbosity."
-        def modinfo
-          verbose = options[:verbose]&.count || 0
+        class_option :verbose,
+                     aliases: "-v",
+                     type: :boolean,
+                     repeatable: true,
+                     default: [true],
+                     desc: "Verbose output (default true). May be repeated for more verbosity."
 
+        no_commands do
+          def check_false
+            options[:verbose] = [] if options[:verbose].include?(false)
+          end
+
+          def verbose
+            check_false
+            options[:verbose]&.count || 0
+          end
+
+          def verbose?
+            check_false
+            options[:verbose]&.count&.positive?
+          end
+        end
+
+        desc "modinfo", "Reads from 'meta/repos/list' and Syncs any modinfo files we find (github only for now)"
+        def modinfo
           modinfo_sync = Icarus::Mod::Tools::ModinfoSync.new
 
-          puts "Retrieving repository Data..." if verbose
+          puts "Retrieving repository Data..." if verbose?
           repositories = modinfo_sync.repositories
 
           raise "Unable to find any repositories!" unless repositories.any?
 
-          puts "Retrieving modinfo Array..." if verbose
+          puts "Retrieving modinfo Array..." if verbose?
           modinfo_array = modinfo_sync.modinfo_data(repositories, verbose: verbose > 1)&.map(&:download_url)&.compact
 
           raise "Unable to find any modinfo.json files!" unless modinfo_array&.any?
 
-          puts "Saving to Firestore..." if verbose
-          resp = modinfo_sync.update(modinfo_array)
-          puts resp ? "Success" : "Failure (may be no changes)" if verbose
+          puts "Saving to Firestore..." if verbose?
+          response = modinfo_sync.update(modinfo_array)
+          puts response ? "Success" : "Failure (may be no changes)" if verbose?
         end
 
         desc "mods", "Reads from 'meta/modinfo/list' and updates the 'mods' database accordingly"
         def mods
-          puts "Syncing Mods with ModInfo..."
+          modsync = Icarus::Mod::Tools::ModSync.new
+
+          puts "Retrieving modinfo Data..." if verbose?
+          modinfo_array = modsync.modinfo_array
+
+          puts "Retrieving mod Data..." if verbose?
+          mod_array = modsync.mods
+
+          puts "Updating mod Data..." if verbose?
+          modinfo_array.each do |mod|
+            verb = "Creating"
+            doc_id = modsync.find_mod(mod)
+
+            if doc_id
+              puts "Found existing mod #{mod.name} at #{doc_id}" if verbose > 2
+              mod.id = doc_id
+              verb = "Updating"
+            end
+
+            print format("#{verb} %-<name>60s", name: "'#{mod.author || "NoOne"}/#{mod.name || "Unnamed"}'") if verbose > 1
+            response = modsync.update(mod)
+            puts format("%<status>10s", status: response ? "Success" : "Failure") if verbose > 1
+          end
+
+          delete_array = mod_array.filter { |mod| modsync.find_modinfo(mod).nil? }
+
+          return unless delete_array.any?
+
+          puts "Deleting outdated mods..." if verbose?
+          delete_array.each do |mod|
+            print format("Deleting %-<name>60s", name: "'#{mod.author || "NoOne"}/#{mod.name || "Unnamed'"}") if verbose > 1
+            response = modsync.delete(mod)
+            puts format("%<status>10s", status: response ? "Success" : "Failure") if verbose > 1
+          end
         end
       end
     end

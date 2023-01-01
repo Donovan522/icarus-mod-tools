@@ -35,6 +35,8 @@ Metrics/PerceivedComplexity:
 
 Metrics/AbcSize:
   Max: 25
+  Exclude:
+    - lib/icarus/mod/cli/*.rb # Thor command files
 
 Metrics/MethodLength:
   Max: 50
