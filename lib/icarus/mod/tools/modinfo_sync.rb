@@ -2,9 +2,6 @@
 
 require "firestore"
 require "github"
-require "uri"
-require "net/http"
-require "json"
 require "tools/sync_helpers"
 
 module Icarus

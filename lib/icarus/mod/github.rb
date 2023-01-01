@@ -36,7 +36,7 @@ module Icarus
         if use_cache
           @resources.each { |file| block.call(file) } if block_given?
         else
-          @client.contents(repository, path: path).each do |entry|
+          @client.contents(repository, path:).each do |entry|
             if entry[:type] == "dir"
               all_files(path: entry[:path], cache: false, recursive: true, &block) if recursive
               next # we don't need directories in our output

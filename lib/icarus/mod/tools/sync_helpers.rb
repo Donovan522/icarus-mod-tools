@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "firestore"
-require "github"
 require "uri"
 require "net/http"
 require "json"
@@ -14,9 +12,9 @@ module Icarus
         def retrieve_from_url(url)
           res = Net::HTTP.get_response(URI(url))
 
-          raise "HTTP Request failed (#{res.code}): #{res.message}" unless res.is_a?(Net::HTTPSuccess)
+          raise "HTTP Request failed (#{res.code}): #{res.message}" unless res&.code == "200"
 
-          JSON.parse(res.body)
+          JSON.parse(res.body, symbolize_names: true)
         end
       end
     end
