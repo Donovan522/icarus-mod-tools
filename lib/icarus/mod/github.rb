@@ -26,7 +26,10 @@ module Icarus
       end
 
       # Recursively returns all resources in the repository
-      def all_files(path: nil, cache: true, &block)
+      #  path: the path to search in
+      #  cache: whether to use the cached resources
+      #  recursive: whether to recursively search subdirectories
+      def all_files(path: nil, cache: true, recursive: false, &block)
         # If we've already been called for this repository, use the cached resources
         use_cache = @resources.any? && cache
 
@@ -35,8 +38,8 @@ module Icarus
         else
           @client.contents(repository, path: path).each do |entry|
             if entry[:type] == "dir"
-              all_files(path: entry[:path], cache: false, &block)
-              next # skip directories
+              all_files(path: entry[:path], cache: false, recursive: true, &block) if recursive
+              next # we don't need directories in our output
             end
 
             block.call(entry) if block_given?
@@ -49,6 +52,10 @@ module Icarus
 
       def find(pattern)
         all_files { |file| return file if file[:name] =~ /#{pattern}/i }
+      end
+
+      def get_contents(url)
+        @client.contents(url)
       end
     end
   end

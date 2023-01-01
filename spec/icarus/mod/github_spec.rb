@@ -62,7 +62,7 @@ RSpec.describe Icarus::Mod::Github do
     end
 
     it "calls the client recursively with directories" do
-      github.all_files
+      github.all_files(recursive: true)
 
       expect(github.client).to have_received(:contents).with(repository_stub, path: dir[:path])
     end

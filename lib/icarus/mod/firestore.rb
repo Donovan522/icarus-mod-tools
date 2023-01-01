@@ -13,7 +13,11 @@ module Icarus
       end
 
       def repos
-        @repos ||= firestore.doc("meta/repos").get[:list]
+        @repos ||= @client.doc("meta/repos").get[:list]
+      end
+
+      def update_modinfo_list(modinfo_array)
+        @client.doc("meta/modinfo").set({ list: modinfo_array })
       end
     end
   end

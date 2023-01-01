@@ -22,10 +22,16 @@ Style/FrozenStringLiteralComment:
     - spec/**/*_spec.rb
 
 Metrics/CyclomaticComplexity:
-  Max: 10
+  Max: 15
+  Exclude:
+    - spec/**/*_spec.rb
+    - lib/icarus/mod/cli/*.rb # Thor command files
 
 Metrics/PerceivedComplexity:
-  Max: 10
+  Max: 15
+  Exclude:
+    - spec/**/*_spec.rb
+    - lib/icarus/mod/cli/*.rb # Thor command files
 
 Metrics/AbcSize:
   Max: 25
@@ -35,3 +41,7 @@ Metrics/MethodLength:
 
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
+
+Style/Documentation:
+  Exclude:
+    - lib/icarus/mod/cli/*.rb # Thor command files
