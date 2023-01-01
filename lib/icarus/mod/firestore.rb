@@ -13,11 +13,35 @@ module Icarus
       end
 
       def repos
-        @repos ||= @client.doc("meta/repos").get[:list]
+        @repos ||= list(:repositories)
       end
 
-      def update_modinfo_list(modinfo_array)
-        @client.doc("meta/modinfo").set({ list: modinfo_array })
+      def list(type)
+        case type
+        when :modinfo
+          @client.doc("meta/modinfo").get[:list]
+        when :repositories
+          @client.doc("meta/repos").get[:list]
+        else
+          raise "Invalid type: #{type}"
+        end
+      end
+
+      def update(type, payload, merge: false)
+        raise "You must specify a payload to update" if payload&.empty? || payload.nil?
+
+        case type
+        when :modinfo
+          resp = @client.doc("meta/modinfo").set({ list: payload }, merge: merge)
+        when :repositories
+          resp = @client.doc("meta/repos").set({ list: payload }, merge: merge)
+        else
+          raise "Invalid type: #{type}"
+        end
+
+        raise "Failed to update #{type}" unless resp.respond_to?(:update_time)
+
+        (Time.now - resp.update_time) < 60
       end
     end
   end

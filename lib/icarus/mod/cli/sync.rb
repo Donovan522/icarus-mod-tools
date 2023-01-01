@@ -30,7 +30,8 @@ module Icarus
           raise "Unable to find any modinfo.json files!" unless modinfo_array&.any?
 
           puts "Saving to Firestore..." if verbose
-          modinfo_sync.update_modinfo_list(modinfo_array)
+          resp = modinfo_sync.update(modinfo_array)
+          puts resp ? "Success" : "Failure (may be no changes)" if verbose
         end
 
         desc "mods", "Reads from 'meta/modinfo/list' and updates the 'mods' database accordingly"

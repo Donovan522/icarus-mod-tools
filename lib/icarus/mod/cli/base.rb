@@ -19,6 +19,8 @@ module Icarus
 
       # Require subcommands after the SubCommandBase class is defined
       require "cli/sync"
+      require "cli/list"
+      require "cli/add"
 
       # The main CLI for Icarus Mod Tools
       class Base < Thor
@@ -29,6 +31,11 @@ module Icarus
         desc "sync", "Syncs the databases"
         subcommand "sync", Sync
 
+        desc "list", "Lists the databases"
+        subcommand "list", List
+
+        desc "add", "Adds entries to the databases"
+        subcommand "add", Add
         # desc "tools", "Runs a tool"
         # subcommand "tools", Tools
       end

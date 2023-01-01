@@ -24,10 +24,8 @@ module Icarus
           @firestore.repos
         end
 
-        def update_modinfo_list(modinfo_array)
-          resp = @firestore.update_modinfo_list(modinfo_array)
-
-          raise "Failed to save data to Firestore!" unless (Time.now - resp.update_time) < 10
+        def update(modinfo_array)
+          @firestore.update(:modinfo, modinfo_array)
         end
 
         def modinfo(url)
