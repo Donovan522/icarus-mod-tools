@@ -23,13 +23,19 @@ module Icarus
         method_option :filter, type: :array, default: [], desc: "Filter by field (name, author, etc.)"
         def mods
           valid_keys = Icarus::Mod::Tools::Modinfo::HASHKEYS + [:updated_at]
-          sort_field = options[:sort].to_sym
-          filter_field = options[:filter].first.to_sym
-          filter_value = options[:filter].last.to_s
 
-          raise "Invalid filter option" unless options[:filter]&.count == 2
+          sort_field = options[:sort]&.to_sym
 
-          raise "Invalid filter field '#{filter_field}'" unless filter_field && valid_keys.include?(filter_field)
+          filter = !options[:filter].empty?
+
+          if filter
+            filter_field = options[:filter].first&.to_sym
+            filter_value = options[:filter].last&.to_s
+
+            raise "Invalid filter option" unless options[:filter].empty? || options[:filter]&.count == 2
+
+            raise "Invalid filter field '#{filter_field}'" unless filter_field && valid_keys.include?(filter_field)
+          end
 
           raise "Invalid sort field '#{sort_field}'" unless valid_keys.include?(sort_field)
 
