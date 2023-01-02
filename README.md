@@ -1,22 +1,74 @@
 # Icarus::Mod::Tools
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/icarus/mod/tools`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+a CLI tool for managing the Icarus Mods Database
 
 ## Installation
 
-Install the gem and add to the application's Gemfile by executing:
+`gem install icarus-mod-tools`
 
-    $ bundle add icarus-mod-tools
+To use this app, you'll need to obtain and create the following ENV environment variables:
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+```sh
+export GITHUB_TOKEN=your_github_token
+export GOOGLE_APPLICATION_CREDENTIALS="path/to/your/Google-keyfile"
+```
 
-    $ gem install icarus-mod-tools
+If you aren't sure how to obtain these credentials, please see:
+
+- [Google Cloud Platform](https://cloud.google.com/docs/authentication/getting-started)
+- [GitHub](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
 ## Usage
 
-TODO: Write usage instructions here
+imt [options] [command]
+
+### Commands
+
+```sh
+  imt add             # Adds entries to the databases
+  imt list            # Lists the databases
+  imt sync            # Syncs the databases
+```
+
+#### `imt add`
+
+```sh
+Commands:
+  imt add help [COMMAND]  # Describe subcommands or one specific subcommand
+  imt add modinfo         # Adds an entry to 'meta/modinfo/list'
+  imt add repos           # Adds an entry to 'meta/repos/list'
+
+Options:
+  -v, [--verbose], [--no-verbose]  # Increase verbosity. May be repeated for even more verbosity.
+                                   # Default: [true]
+```
+
+#### `imt list`
+
+```sh
+Commands:
+  imt list help [COMMAND]  # Describe subcommands or one specific subcommand
+  imt list modinfo         # Displays data from 'meta/modinfo/list'
+  imt list mods            # Displays data from 'mods'
+  imt list repos           # Displays data from 'meta/repos/list'
+
+Options:
+  -v, [--verbose], [--no-verbose]  # Increase verbosity. May be repeated for even more verbosity.
+                                   # Default: [true]
+```
+
+#### `imt sync`
+
+```sh
+Commands:
+  imt sync help [COMMAND]  # Describe subcommands or one specific subcommand
+  imt sync modinfo         # Reads from 'meta/repos/list' and Syncs any modinfo files we find (github only for now)
+  imt sync mods            # Reads from 'meta/modinfo/list' and updates the 'mods' database accordingly
+
+Options:
+  -v, [--verbose], [--no-verbose]  # Increase verbosity. May be repeated for even more verbosity.
+                                   # Default: [true]
+```
 
 ## Development
 
