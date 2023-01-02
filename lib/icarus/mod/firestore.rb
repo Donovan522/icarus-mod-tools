@@ -63,7 +63,8 @@ module Icarus
 
         case type
         when :modinfo
-          response = @client.doc(COLLECTIONS[:modinfo]).set({ list: payload }, merge:)
+          update_array = (modinfo_array + [payload]).flatten.uniq
+          response = @client.doc(COLLECTIONS[:modinfo]).set({ list: update_array }, merge:) if update_array.any?
         when :repositories
           response = @client.doc(COLLECTIONS[:repositories]).set({ list: payload }, merge:)
         when :mod
