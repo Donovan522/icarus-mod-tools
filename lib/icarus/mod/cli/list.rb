@@ -19,11 +19,33 @@ module Icarus
         end
 
         desc "mods", "Displays data from 'mods'"
-        method_option :sort, type: :string, default: "name", desc: "Sort by field (name, author, etc.) - defaults to 'name'"
+        method_option :sort, type: :string, default: "name", desc: "Sort by field (name, author, etc.)"
+        method_option :filter, type: :array, default: [], desc: "Filter by field (name, author, etc.)"
         def mods
-          raise "Invalid sort field '#{options[:sort]}'" unless (Icarus::Mod::Tools::Modinfo::HASHKEYS + [:updated_at]).include?(options[:sort].to_sym)
-
+          valid_keys = Icarus::Mod::Tools::Modinfo::HASHKEYS + [:updated_at]
           sort_field = options[:sort].to_sym
+          filter_field = options[:filter].first.to_sym
+          filter_value = options[:filter].last.to_s
+
+          raise "Invalid filter option" unless options[:filter]&.count == 2
+
+          raise "Invalid filter field '#{filter_field}'" unless filter_field && valid_keys.include?(filter_field)
+
+          raise "Invalid sort field '#{sort_field}'" unless valid_keys.include?(sort_field)
+
+          puts "Sorted by #{sort_field}" if sort_field && verbose > 2
+          puts "Filtered by #{filter_field} = #{filter_value}" if filter_field && verbose > 2
+
+          mods = Firestore.new.list(:mods)
+
+          # Filter by field
+          mods.select! { |mod| mod.send(filter_field).downcase =~ /#{filter_value&.downcase}/ } if filter_field
+
+          if mods.empty?
+            puts "no mods found" if verbose?
+            return
+          end
+
           header_format = "%-<name>50s %-<author>20s %-<version>10s %-<updated_at>20s"
           header_format += " %-<id>20s %<description>s" if verbose > 1
 
@@ -38,8 +60,6 @@ module Icarus
               description: "DESCRIPTION"
             )
           end
-
-          mods = Firestore.new.list(:mods)
 
           # Sort by field, optionally subsorting by name
           (sort_field == :name ? mods.sort_by(&:name) : mods.sort_by { |mod| [mod.send(sort_field), mod.name] }).each do |mod|
