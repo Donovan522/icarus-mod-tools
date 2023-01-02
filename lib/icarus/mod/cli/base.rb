@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "tools/version"
+require "version"
 require "tools"
 require "thor"
 
@@ -56,7 +56,7 @@ module Icarus
 
         desc "--version, -V", "print the version and exit"
         def __print_version
-          puts "IcarusModTool (imt) v#{Icarus::Mod::Tools::VERSION}"
+          puts "IcarusModTool (imt) v#{Icarus::Mod::VERSION}"
         end
 
         desc "sync", "Syncs the databases"

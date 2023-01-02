@@ -27,7 +27,17 @@ module Icarus
           header_format = "%-<name>50s %-<author>20s %-<version>10s %-<updated_at>20s"
           header_format += " %-<id>20s %<description>s" if verbose > 1
 
-          puts format(header_format, name: "NAME", author: "AUTHOR", version: "VERSION", updated_at: "LAST UPDATED", id: "ID", description: "DESCRIPTION") if verbose?
+          if verbose?
+            puts format(
+              header_format,
+              name: "NAME",
+              author: "AUTHOR",
+              version: "VERSION",
+              updated_at: "LAST UPDATED",
+              id: "ID",
+              description: "DESCRIPTION"
+            )
+          end
 
           mods = Firestore.new.list(:mods)
 

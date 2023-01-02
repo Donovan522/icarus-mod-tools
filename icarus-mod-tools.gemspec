@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/icarus/mod/tools/version"
+require_relative "lib/icarus/mod/version"
 
 Gem::Specification.new do |spec|
   spec.name = "Icarus-Mod-Tools"
-  spec.version = Icarus::Mod::Tools::VERSION
+  spec.version = Icarus::Mod::VERSION
   spec.authors = ["Donovan Young"]
   spec.email = ["dyoung522@gmail.com"]
 

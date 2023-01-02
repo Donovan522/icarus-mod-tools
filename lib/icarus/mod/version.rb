@@ -2,8 +2,6 @@
 
 module Icarus
   module Mod
-    module Tools
-      VERSION = "1.1.0"
-    end
+    VERSION = "1.2.1"
   end
 end
