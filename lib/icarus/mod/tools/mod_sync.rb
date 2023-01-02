@@ -21,7 +21,10 @@ module Icarus
         def modinfo_array
           @modinfo_array ||= @firestore.modinfo_array.map do |url|
             retrieve_from_url(url)[:mods].map { |mod| Modinfo.new(mod) }
-          end.flatten
+          rescue RequestFailed => e
+            warn "Failed to retrieve modinfo: #{e.message}"
+            next
+          end.flatten.compact
         end
 
         def find_mod(modinfo)

@@ -9,10 +9,12 @@ module Icarus
     module Tools
       # Sync helper methods
       module SyncHelpers
+        class RequestFailed < StandardError; end
+
         def retrieve_from_url(url)
           res = Net::HTTP.get_response(URI(url))
 
-          raise Icarus::Mod::Tools::Error, "HTTP Request failed for #{url} (#{res.code}): #{res.message}" unless res&.code == "200"
+          raise RequestFailed, "HTTP Request failed for #{url} (#{res.code}): #{res.message}" unless res&.code == "200"
 
           JSON.parse(res.body, symbolize_names: true)
         end
