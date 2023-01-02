@@ -32,12 +32,12 @@ module Icarus
             filter_field = options[:filter].first&.to_sym
             filter_value = options[:filter].last&.to_s
 
-            raise "Invalid filter option" unless options[:filter].empty? || options[:filter]&.count == 2
+            raise Icarus::Mod::Tools::Error, "Invalid filter option #{options[:filter]}" unless options[:filter].empty? || options[:filter]&.count == 2
 
-            raise "Invalid filter field '#{filter_field}'" unless filter_field && valid_keys.include?(filter_field)
+            raise Icarus::Mod::Tools::Error, "Invalid filter field '#{filter_field}'" unless filter_field && valid_keys.include?(filter_field)
           end
 
-          raise "Invalid sort field '#{sort_field}'" unless valid_keys.include?(sort_field)
+          raise Icarus::Mod::Tools::Error, "Invalid sort field '#{sort_field}'" unless valid_keys.include?(sort_field)
 
           puts "Sorted by #{sort_field}" if sort_field && verbose > 2
           puts "Filtered by #{filter_field} = #{filter_value}" if filter_field && verbose > 2
@@ -76,7 +76,7 @@ module Icarus
           end
 
           puts "Total: #{mods.count}" if verbose?
-        rescue StandardError => e
+        rescue Icarus::Mod::Tools::Error => e
           puts e.message
           exit 1
         end

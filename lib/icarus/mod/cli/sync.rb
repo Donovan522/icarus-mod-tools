@@ -15,12 +15,12 @@ module Icarus
           puts "Retrieving repository Data..." if verbose?
           repositories = modinfo_sync.repositories
 
-          raise "Unable to find any repositories!" unless repositories.any?
+          raise Icarus::Mod::Tools::Error, "Unable to find any repositories!" unless repositories.any?
 
           puts "Retrieving modinfo Array..." if verbose?
           modinfo_array = modinfo_sync.modinfo_data(repositories, verbose: verbose > 1)&.map(&:download_url)&.compact
 
-          raise "Unable to find any modinfo.json files!" unless modinfo_array&.any?
+          raise Icarus::Mod::Tools::Error, "Unable to find any modinfo.json files!" unless modinfo_array&.any?
 
           puts "Saving to Firestore..." if verbose?
           response = modinfo_sync.update(modinfo_array)
@@ -67,6 +67,9 @@ module Icarus
           end
 
           puts "Deleted #{delete_array.count} outdated mods" if verbose?
+        rescue Icarus::Mod::Tools::Error => e
+          warn e.message
+          exit 1
         end
       end
     end

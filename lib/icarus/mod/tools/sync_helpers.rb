@@ -12,7 +12,7 @@ module Icarus
         def retrieve_from_url(url)
           res = Net::HTTP.get_response(URI(url))
 
-          raise "HTTP Request failed (#{res.code}): #{res.message}" unless res&.code == "200"
+          raise Icarus::Mod::Tools::Error, "HTTP Request failed for #{url} (#{res.code}): #{res.message}" unless res&.code == "200"
 
           JSON.parse(res.body, symbolize_names: true)
         end
