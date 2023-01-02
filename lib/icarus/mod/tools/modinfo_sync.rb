@@ -36,15 +36,15 @@ module Icarus
             case repo
             when /github/
               @github.repository = repo
-              modinfo = @github.find("modinfo.json")
+              modinfo_url = @github.find("modinfo.json")
 
-              unless modinfo
+              unless modinfo_url
                 puts "Skipped...no modinfo.json" if verbose
                 next
               end
 
               puts "Found!" if verbose
-              modinfo
+              modinfo_url
             else
               puts "Skipped...repository type not supported yet" if verbose
             end

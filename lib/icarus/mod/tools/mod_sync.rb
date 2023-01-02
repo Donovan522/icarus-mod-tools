@@ -14,10 +14,6 @@ module Icarus
           @firestore = Firestore.new
         end
 
-        def self.sync
-          new.sync
-        end
-
         def mods
           @firestore.mods
         end

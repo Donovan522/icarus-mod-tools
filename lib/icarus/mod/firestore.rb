@@ -42,7 +42,9 @@ module Icarus
         when :repositories
           @client.doc(COLLECTIONS[:repositories]).get[:list]
         when :mods
-          @client.col(COLLECTIONS[:mods]).get.map { |doc| Icarus::Mod::Tools::Modinfo.new(doc&.data, id: doc&.document_id, created: doc&.create_time, updated: doc&.update_time) }
+          @client.col(COLLECTIONS[:mods]).get.map do |doc|
+            Icarus::Mod::Tools::Modinfo.new(doc.data, id: doc.document_id, created: doc.create_time, updated: doc.update_time)
+          end
         else
           raise "Invalid type: #{type}"
         end

@@ -53,6 +53,8 @@ module Icarus
             puts format("%<status>10s", status: response ? "Success" : "Failure") if verbose > 1
           end
 
+          puts "Created/Updated #{modinfo_array.count} mods" if verbose?
+
           delete_array = mod_array.filter { |mod| modsync.find_modinfo(mod).nil? }
 
           return unless delete_array.any?
@@ -63,6 +65,8 @@ module Icarus
             response = modsync.delete(mod)
             puts format("%<status>10s", status: response ? "Success" : "Failure") if verbose > 1
           end
+
+          puts "Deleted #{delete_array.count} outdated mods" if verbose?
         end
       end
     end

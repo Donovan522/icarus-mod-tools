@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "tools/version"
 require "tools"
 require "thor"
 

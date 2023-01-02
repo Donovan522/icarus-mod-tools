@@ -36,7 +36,7 @@ module Icarus
         end
 
         def method_missing(method_name, *_args, &)
-          to_h[method_name.to_sym].strip
+          to_h[method_name.to_sym]&.strip
         end
 
         def respond_to_missing?(method_name, include_private = false)
