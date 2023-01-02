@@ -5,12 +5,14 @@ module Icarus
     module Tools
       # Sync methods
       class Modinfo
-        attr_reader :data, :id
+        attr_reader :data, :id, :created_at, :updated_at
 
         HASHKEYS = %i[name author version compatibility description fileType fileURL].freeze
 
-        def initialize(data, id: nil)
+        def initialize(data, id: nil, created: nil, updated: nil)
           @id = id
+          @created_at = created
+          @updated_at = updated
           read(data)
         end
 

@@ -8,6 +8,29 @@ module Icarus
     module CLI
       # Base class for all subcommands
       class SubCommandBase < Thor
+        class_option :verbose,
+                     aliases: "-v",
+                     type: :boolean,
+                     repeatable: true,
+                     default: [true],
+                     desc: "Increase verbosity. May be repeated for even more verbosity."
+
+        no_commands do
+          def check_false
+            options[:verbose] = [] if options[:verbose].include?(false)
+          end
+
+          def verbose
+            check_false
+            options[:verbose]&.count || 0
+          end
+
+          def verbose?
+            check_false
+            options[:verbose]&.count&.positive?
+          end
+        end
+
         def self.banner(command, _namespace = nil, _subcommand = false) # rubocop:disable Style/OptionalBooleanParameter
           "#{basename} #{subcommand_prefix} #{command.usage}"
         end
@@ -28,6 +51,13 @@ module Icarus
           true
         end
 
+        map %w[--version -V] => :__print_version
+
+        desc "--version, -V", "print the version and exit"
+        def __print_version
+          puts "IcarusModTool (imt) v#{Icarus::Mod::Tools::VERSION}"
+        end
+
         desc "sync", "Syncs the databases"
         subcommand "sync", Sync
 
@@ -36,8 +66,6 @@ module Icarus
 
         desc "add", "Adds entries to the databases"
         subcommand "add", Add
-        # desc "tools", "Runs a tool"
-        # subcommand "tools", Tools
       end
     end
   end

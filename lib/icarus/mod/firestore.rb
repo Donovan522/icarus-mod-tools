@@ -16,7 +16,7 @@ module Icarus
       }.freeze
 
       def initialize
-        @client = Google::Cloud::Firestore.new(project_id: "projectdaedalus-fb09f", credentials: ENV.fetch("FIREBASE_KEYFILE"))
+        @client = Google::Cloud::Firestore.new(project_id: "projectdaedalus-fb09f", credentials: ENV.fetch("GOOGLE_APPLICATION_CREDENTIALS", nil))
       end
 
       def repos
@@ -42,7 +42,7 @@ module Icarus
         when :repositories
           @client.doc(COLLECTIONS[:repositories]).get[:list]
         when :mods
-          @client.col(COLLECTIONS[:mods]).get.map { |doc| Icarus::Mod::Tools::Modinfo.new(doc&.data, id: doc&.document_id) }
+          @client.col(COLLECTIONS[:mods]).get.map { |doc| Icarus::Mod::Tools::Modinfo.new(doc&.data, id: doc&.document_id, created: doc&.create_time, updated: doc&.update_time) }
         else
           raise "Invalid type: #{type}"
         end

@@ -10,7 +10,7 @@ module Icarus
 
       def initialize(repo = nil)
         self.repository = repo if repo
-        @client = Octokit::Client.new(access_token: ENV.fetch("GITHUB_TOKEN"))
+        @client = Octokit::Client.new(access_token: ENV.fetch("GITHUB_TOKEN", nil))
         @resources = []
       end
 

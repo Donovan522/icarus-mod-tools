@@ -8,29 +8,6 @@ module Icarus
     module CLI
       # Sync CLI command definitions
       class Sync < SubCommandBase
-        class_option :verbose,
-                     aliases: "-v",
-                     type: :boolean,
-                     repeatable: true,
-                     default: [true],
-                     desc: "Verbose output (default true). May be repeated for more verbosity."
-
-        no_commands do
-          def check_false
-            options[:verbose] = [] if options[:verbose].include?(false)
-          end
-
-          def verbose
-            check_false
-            options[:verbose]&.count || 0
-          end
-
-          def verbose?
-            check_false
-            options[:verbose]&.count&.positive?
-          end
-        end
-
         desc "modinfo", "Reads from 'meta/repos/list' and Syncs any modinfo files we find (github only for now)"
         def modinfo
           modinfo_sync = Icarus::Mod::Tools::ModinfoSync.new
