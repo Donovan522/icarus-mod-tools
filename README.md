@@ -2,21 +2,48 @@
 
 a CLI tool for managing the Icarus Mods Database
 
-## Installation
+## Requirements
 
-`gem install icarus-mod-tools`
+To use this app, you'll need to obtain the following:
 
-To use this app, you'll need to obtain and create the following ENV environment variables:
-
-```sh
-export GITHUB_TOKEN=your_github_token
-export GOOGLE_APPLICATION_CREDENTIALS="path/to/your/Google-keyfile"
-```
+- A Github ACCESS_TOKEN (doesn't need access to any repos, this is used purely to make API calls)
+- A Google Cloud Platform credentials `keyfile.json`
+- Ruby 3.1 (or greater)
 
 If you aren't sure how to obtain these credentials, please see:
 
 - [Google Cloud Platform](https://cloud.google.com/docs/authentication/getting-started)
 - [GitHub](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+
+I _highly_ recommend using WSL2 on Windows, or a Linux distro on your machine. This app has not been tested on Windows.
+
+## Installation
+
+`gem install Icarus-Mod-Tools`
+
+## Configuration
+
+Create a file called `.imtconfig.json` in your home directory with the following, replacing the CAPITALIZED values with the values provided by the above links:
+
+```json
+{
+  "firebase": {
+    "credentials": {
+      "copy your Google Cloud Platform keyfile.json here and remove this line": null
+    },
+    "collections": {
+      "modinfo": "meta/modinfo",
+      "repositories": "meta/repos",
+      "mods": "mods"
+    }
+  },
+  "github": {
+    "token": "YOUR-GITHUB-TOKEN"
+  }
+}
+```
+
+_Hint: Copy the contents of your Google Cloud Platform `keyfile.json` into the `credentials` section of the above file._
 
 ## Usage
 

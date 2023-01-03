@@ -9,3 +9,4 @@
 
 .env
 .firebase-keyfile.json
+.imtconfig.json

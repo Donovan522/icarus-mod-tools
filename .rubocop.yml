@@ -47,3 +47,6 @@ RSpec/MultipleMemoizedHelpers:
 Style/Documentation:
   Exclude:
     - lib/icarus/mod/cli/*.rb # Thor command files
+
+Style/OpenStructUse:
+  Enabled: false
