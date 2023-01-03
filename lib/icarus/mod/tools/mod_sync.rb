@@ -28,7 +28,7 @@ module Icarus
         end
 
         def find_mod(modinfo)
-          @firestore.find_mod(:name, modinfo.name)&.id
+          @firestore.find_mod(name: modinfo.name, author: modinfo.author)&.id
         end
 
         def find_modinfo(modinfo)

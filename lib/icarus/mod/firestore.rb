@@ -7,16 +7,11 @@ module Icarus
   module Mod
     # Helper methods for interacting with the Firestore API
     class Firestore
-      attr_reader :client
-
-      COLLECTIONS = {
-        modinfo: "meta/modinfo",
-        repositories: "meta/repos",
-        mods: "mods"
-      }.freeze
+      attr_reader :client, :collections
 
       def initialize
-        @client = Google::Cloud::Firestore.new(project_id: "projectdaedalus-fb09f", credentials: ENV.fetch("GOOGLE_APPLICATION_CREDENTIALS", nil))
+        @client = Google::Cloud::Firestore.new(credentials: Config.firebase.credentials.to_h)
+        @collections = Config.firebase.collections
       end
 
       def repos
@@ -31,18 +26,18 @@ module Icarus
         @mods ||= list(:mods)
       end
 
-      def find_mod(field, value)
-        mods.find { |mod| mod.send(field) == value }
+      def find_mod(name:, author:)
+        mods.find { |mod| mod.name == name && mod.author == author }
       end
 
       def list(type)
         case type
         when :modinfo
-          @client.doc(COLLECTIONS[:modinfo]).get[:list]
+          @client.doc(collections.modinfo).get[:list]
         when :repositories
-          @client.doc(COLLECTIONS[:repositories]).get[:list]
+          @client.doc(collections.repositories).get[:list]
         when :mods
-          @client.col(COLLECTIONS[:mods]).get.map do |doc|
+          @client.col(collections.mods).get.map do |doc|
             Icarus::Mod::Tools::Modinfo.new(doc.data, id: doc.document_id, created: doc.create_time, updated: doc.update_time)
           end
         else
@@ -51,11 +46,11 @@ module Icarus
       end
 
       def update_or_create_mod(payload, merge:)
-        doc_id = payload.id || find_mod(:name, payload.name)&.id
+        doc_id = payload.id || find_mod(name: payload.name, author: payload.author)&.id
 
-        return @client.doc("#{COLLECTIONS[:mods]}/#{doc_id}").set(payload.to_h, merge:) if doc_id
+        return @client.doc("#{collections.mods}/#{doc_id}").set(payload.to_h, merge:) if doc_id
 
-        @client.col(COLLECTIONS[:mods]).add(payload.to_h)
+        @client.col(collections.mods).add(payload.to_h)
       end
 
       def update(type, payload, merge: false)
@@ -64,9 +59,9 @@ module Icarus
         case type
         when :modinfo
           update_array = (modinfo_array + [payload]).flatten.uniq
-          response = @client.doc(COLLECTIONS[:modinfo]).set({ list: update_array }, merge:) if update_array.any?
+          response = @client.doc(collections.modinfo).set({ list: update_array }, merge:) if update_array.any?
         when :repositories
-          response = @client.doc(COLLECTIONS[:repositories]).set({ list: payload }, merge:)
+          response = @client.doc(collections.repositories).set({ list: payload }, merge:)
         when :mod
           response = update_or_create_mod(payload, merge:)
         else
@@ -79,7 +74,7 @@ module Icarus
       def delete(type, payload)
         case type
         when :mod
-          response = @client.doc("#{COLLECTIONS[:mods]}/#{payload.id}").delete
+          response = @client.doc("#{collections.mods}/#{payload.id}").delete
         else
           raise "Invalid type: #{type}"
         end

@@ -7,7 +7,7 @@ module Icarus
   module Mod
     module CLI
       # Sync CLI command definitions
-      class Sync < SubCommandBase
+      class Sync < SubcommandBase
         desc "modinfo", "Reads from 'meta/repos/list' and Syncs any modinfo files we find (github only for now)"
         def modinfo
           modinfo_sync = Icarus::Mod::Tools::ModinfoSync.new

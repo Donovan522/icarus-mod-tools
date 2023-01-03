@@ -44,7 +44,7 @@ RSpec.describe Icarus::Mod::Tools::ModSync do
     it "calls Firestore.find_mod" do
       modsync.find_mod(modinfo)
 
-      expect(firestore_double).to have_received(:find_mod).with(:name, "Test Icarus Mod")
+      expect(firestore_double).to have_received(:find_mod).with(name: "Test Icarus Mod", author: "Test User")
     end
   end
 

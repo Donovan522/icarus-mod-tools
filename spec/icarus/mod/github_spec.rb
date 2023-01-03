@@ -1,9 +1,17 @@
+require "github"
+
 RSpec.describe Icarus::Mod::Github do
   subject { github }
 
   let(:github) { described_class.new }
   let(:repository_stub) { "test/icarus-mod-tools" }
   let(:repository) { "https://api.github.com/#{repository_stub}" }
+
+  before do
+    allow(Icarus::Mod::Config).to receive(:github).and_return(
+      OpenStruct.new(token: "FAKE_TOKEN")
+    )
+  end
 
   it { is_expected.to be_a(described_class) }
   it { is_expected.to respond_to(:client) }

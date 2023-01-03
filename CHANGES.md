@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## History (reverse chronological order)
 
+### v1.4 - 2023-03
+
+**BREAKING CHANGES!**
+
+You'll need to move your ENV variables to a config file. See the README for more details.
+
+- Read configuration from `~/.imtconfig.json`
+- bugfixes
+
 ### v1.3 - 2023-02
 
 - First public release

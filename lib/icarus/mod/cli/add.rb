@@ -6,7 +6,7 @@ module Icarus
   module Mod
     module CLI
       # Sync CLI command definitions
-      class Add < SubCommandBase
+      class Add < SubcommandBase
         desc "modinfo", "Adds an entry to 'meta/modinfo/list'"
         def modinfo(item)
           firestore = Firestore.new

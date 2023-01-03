@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "cli/base"
+require "cli/command"
 
-Icarus::Mod::CLI::Base.start
+Icarus::Mod::CLI::Command.start
