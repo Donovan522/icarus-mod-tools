@@ -32,9 +32,11 @@ module Icarus
           end
         end
 
-        def self.banner(command, _namespace = nil, _subcommand = false) # rubocop:disable Style/OptionalBooleanParameter
+        # rubocop:disable Style/OptionalBooleanParameter
+        def self.banner(command, _namespace = nil, _subcommand = false)
           "#{basename} #{subcommand_prefix} #{command.usage}"
         end
+        # rubocop:enable Style/OptionalBooleanParameter
 
         def self.subcommand_prefix
           name.gsub(/.*::/, "").gsub(/^[A-Z]/) { |match| match[0].downcase }.gsub(/[A-Z]/) { |match| "-#{match[0].downcase}" }

@@ -20,19 +20,18 @@ module Icarus
           @data = data.is_a?(String) ? JSON.parse(data, symbolize_names: true) : data
         end
 
+        # rubocop:disable Naming/MethodName
+        def fileType
+          @data[:fileType] || "pak"
+        end
+        # rubocop:enable Naming/MethodName
+
         def to_json(*args)
           JSON.generate(@data, *args)
         end
 
         def to_h
           @data || {}
-        end
-
-        def to_s
-          format(
-            "%-<name>30s %-<author>20s v%-<version>10s %<description>s",
-            name:, author:, version: (version || "None"), description:
-          )
         end
 
         def method_missing(method_name, *_args, &)

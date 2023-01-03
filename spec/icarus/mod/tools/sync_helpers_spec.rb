@@ -32,7 +32,7 @@ RSpec.describe Icarus::Mod::Tools::SyncHelpers do
       end
 
       it "raises an error" do
-        expect { sync_helpers.retrieve_from_url(uri) }.to raise_error(Icarus::Mod::Tools::Error, "HTTP Request failed (404): Not Found")
+        expect { sync_helpers.retrieve_from_url(uri) }.to raise_error(Icarus::Mod::Tools::RequestFailed, "HTTP Request failed for #{url} (404): Not Found")
       end
     end
   end
