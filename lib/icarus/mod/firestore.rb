@@ -26,8 +26,8 @@ module Icarus
         @mods ||= list(:mods)
       end
 
-      def find_mod(field, value)
-        mods.find { |mod| mod.send(field) == value }
+      def find_mod(name:, author:)
+        mods.find { |mod| mod.name == name && mod.author == author }
       end
 
       def list(type)
@@ -46,7 +46,7 @@ module Icarus
       end
 
       def update_or_create_mod(payload, merge:)
-        doc_id = payload.id || find_mod(:name, payload.name)&.id
+        doc_id = payload.id || find_mod(name: payload.name, author: payload.author)&.id
 
         return @client.doc("#{collections.mods}/#{doc_id}").set(payload.to_h, merge:) if doc_id
 

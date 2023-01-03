@@ -7,7 +7,7 @@ module Icarus
     module Tools
       class Error < StandardError; end
 
-      Icarus::Mod::Config.read
+      # Icarus::Mod::Config.read
     end
   end
 end

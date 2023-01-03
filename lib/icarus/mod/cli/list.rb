@@ -7,15 +7,19 @@ module Icarus
   module Mod
     module CLI
       # Sync CLI command definitions
-      class List < SubCommandBase
+      class List < SubcommandBase
         desc "modinfo", "Displays data from 'meta/modinfo/list'"
         def modinfo
-          puts Firestore.new.list(:modinfo)
+          modinfos = Firestore.new.list(:modinfo)
+          puts modinfos
+          puts "Total: #{modinfos.count}" if verbose > 1
         end
 
         desc "repos", "Displays data from 'meta/repos/list'"
         def repos
-          puts Firestore.new.list(:repositories)
+          repos = Firestore.new.list(:repositories)
+          puts repos
+          puts "Total: #{repos.count}" if verbose > 1
         end
 
         desc "mods", "Displays data from 'mods'"
