@@ -21,8 +21,11 @@ module Icarus
         def modinfo_array
           @modinfo_array ||= @firestore.modinfo_array.map do |url|
             retrieve_from_url(url)[:mods].map { |mod| Modinfo.new(mod) }
-          rescue RequestFailed => e
-            warn "Failed to retrieve modinfo: #{e.message}"
+          rescue Icarus::Mod::Tools::RequestFailed
+            warn "Skipped; Failed to retrieve #{url}"
+            next
+          rescue JSON::ParserError => e
+            warn "Skipped; Invalid JSON: #{e.full_message}"
             next
           end.flatten.compact
         end
