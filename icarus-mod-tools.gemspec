@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = "Various tools for Icarus Modding"
   spec.description = spec.summary
-  spec.homepage = "https://github.com/Donovan522/icarus-mod-tools"
+  spec.homepage = "https://github.com/DonovanMods/icarus-mod-tools"
   spec.required_ruby_version = ">= 3.1"
 
   spec.metadata["homepage_uri"] = spec.homepage

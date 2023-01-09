@@ -7,7 +7,7 @@ module Icarus
       class Modinfo
         attr_reader :data, :id, :created_at, :updated_at
 
-        HASHKEYS = %i[name author version compatibility description fileType fileURL].freeze
+        HASHKEYS = %i[name author version compatibility description long_description fileType fileURL imageURL].freeze
 
         def initialize(data, id: nil, created: nil, updated: nil)
           @id = id
@@ -31,15 +31,25 @@ module Icarus
         end
 
         def to_h
-          @data || {}
+          {
+            name:,
+            author:,
+            version:,
+            compatibility:,
+            description:,
+            long_description:,
+            fileType:,
+            fileURL:,
+            imageURL:
+          }
         end
 
         def method_missing(method_name, *_args, &)
-          to_h[method_name.to_sym]&.strip
+          @data[method_name.to_sym]&.strip
         end
 
         def respond_to_missing?(method_name, include_private = false)
-          @data&.key?(method_name.to_sym) || super
+          HASHKEYS.include?(method_name.to_sym) || super
         end
       end
     end

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## History (reverse chronological order)
 
+### v1.5 - 2023-08
+
+- Moved source into the DonovanMods Github organization
+- Added `long_description` to `modinfo.json`
+- Added `imageURL` to `modinfo.json`
+- bugfixes
+
 ### v1.4 - 2023-03
 
 **BREAKING CHANGES!**
