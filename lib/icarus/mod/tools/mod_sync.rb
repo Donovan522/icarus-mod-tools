@@ -20,7 +20,7 @@ module Icarus
 
         def modinfo_array
           @modinfo_array ||= @firestore.modinfo_array.map do |url|
-            retrieve_from_url(url)[:mods].map { |mod| Modinfo.new(mod) }
+            retrieve_from_url(url)[:mods].map { |mod| Modinfo.new(mod) if mod[:name] =~ /[a-z0-9]+/i }
           rescue Icarus::Mod::Tools::RequestFailed
             warn "Skipped; Failed to retrieve #{url}"
             next
