@@ -28,6 +28,7 @@ module Icarus
         end
 
         desc "mods", "Reads from 'meta/modinfo/list' and updates the 'mods' database accordingly"
+        method_option :check, type: :boolean, default: false, desc: "Validate modinfo without applying changes"
         def mods
           modsync = Icarus::Mod::Tools::ModSync.new
 
@@ -36,6 +37,8 @@ module Icarus
 
           puts "Retrieving mod Data..." if verbose?
           mod_array = modsync.mods
+
+          return if options[:check]
 
           puts "Updating mod Data..." if verbose?
           modinfo_array.each do |mod|

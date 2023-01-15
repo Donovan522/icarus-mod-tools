@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## History (reverse chronological order)
 
+### v1.6 - 2023-15
+
+- Added `--check` to `sync mods` to check for updates without downloading
+- Added support for `readmeURL` in `modinfo.json`
+
 ### v1.5 - 2023-08
 
 - Moved source into the DonovanMods Github organization

@@ -7,7 +7,7 @@ module Icarus
       class Modinfo
         attr_reader :data, :id, :created_at, :updated_at
 
-        HASHKEYS = %i[name author version compatibility description long_description fileType fileURL imageURL].freeze
+        HASHKEYS = %i[name author version compatibility description long_description fileType fileURL imageURL readmeURL].freeze
 
         def initialize(data, id: nil, created: nil, updated: nil)
           @id = id
@@ -40,7 +40,8 @@ module Icarus
             long_description:,
             fileType:,
             fileURL:,
-            imageURL:
+            imageURL:,
+            readmeURL:
           }
         end
 
