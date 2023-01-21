@@ -7,5 +7,6 @@
   "long_description": "A modinfo long description used for testing",
   "fileType": "pak",
   "fileURL": "https://example.com/test/Icarus-Mods/raw/main/TestMod_P.pak",
-  "imageURL": "https://example.com/test/images/test_image.png"
+  "imageURL": "https://example.com/test/images/test_image.png",
+  "readmeURL": "https://example.com/test/Icarus-Mods/raw/main/README.md"
 }

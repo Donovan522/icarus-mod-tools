@@ -43,8 +43,11 @@ module Icarus
           puts "Updating mod Data..." if verbose?
           modinfo_array.each do |mod|
             verb = "Creating"
-            doc_id = modsync.find_mod(mod)
 
+            puts "Validating modinfo Data for #{mod.uniq_name}..." if verbose > 2
+            warn "Skipping mod #{mod.uniq_name} due to validation errors" && next unless mod.validate
+
+            doc_id = modsync.find_mod(mod)
             if doc_id
               puts "Found existing mod #{mod.name} at #{doc_id}" if verbose > 2
               mod.id = doc_id

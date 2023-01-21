@@ -20,6 +20,12 @@ RSpec.describe Icarus::Mod::Tools::Modinfo do
     end
   end
 
+  describe "#uniq_name" do
+    it "returns a String with author and name" do
+      expect(modinfo.uniq_name).to eq("#{modinfo.author}/#{modinfo.name}")
+    end
+  end
+
   describe "#to_json" do
     it "returns a JSON String" do
       expect(modinfo.to_json).to be_a(String)

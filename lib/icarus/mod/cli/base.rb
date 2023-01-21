@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require "version"
-require "tools"
+require "paint"
 require "thor"
+require "tools"
+require "version"
 
 module Icarus
   module Mod
