@@ -53,13 +53,13 @@ module Icarus
         end
 
         def validate
-          @warnings << "Version should not be blank" unless validate_string(version)
+          @warnings << "Version should be a version string" unless validate_version(version)
 
           %w[name author description].each do |key|
             @errors << "#{key.capitalize} cannot be blank" unless validate_string(@data[key.to_sym])
           end
 
-          @errors << "Invalid FileType: #{fileType || "blank"}" unless validate_filetype(fileType)
+          @errors << "Invalid fileType: #{fileType || "blank"}" unless validate_filetype(fileType)
 
           %w[fileURL imageURL readmeURL].each do |key|
             @errors << "Invalid URL #{key.capitalize}: #{@data[key.to_sym] || "blank"}" unless validate_url(@data[key.to_sym])
@@ -90,6 +90,10 @@ module Icarus
 
         def validate_string(string)
           !(string.nil? || string.empty?)
+        end
+
+        def validate_version(version)
+          version =~ /\d+\.\d+[.\d+]?/
         end
       end
     end

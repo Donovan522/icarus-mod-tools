@@ -51,4 +51,109 @@ RSpec.describe Icarus::Mod::Tools::Modinfo do
       it { is_expected.to respond_to(key) }
     end
   end
+
+  describe "#validate" do
+    context "when given valid Modinfo data" do
+      it "returns true" do
+        expect(modinfo.validate).to be true
+      end
+
+      it "does not add to @errors" do
+        modinfo.validate
+        expect(modinfo.errors).to be_empty
+      end
+
+      it "does not add to warnings" do
+        modinfo.validate
+        expect(modinfo.warnings).to be_empty
+      end
+    end
+
+    context "when fileType is blank" do
+      before { modinfo.read(modinfo_data.merge(fileType: "")) }
+
+      it "returns false" do
+        expect(modinfo.validate).to be false
+      end
+
+      it "adds to @errors" do
+        modinfo.validate
+        expect(modinfo.errors).to include("Invalid fileType: ")
+      end
+    end
+
+    context "when fileType is invalid" do
+      before { modinfo.read(modinfo_data.merge(fileType: "FOO")) }
+
+      it "returns false" do
+        expect(modinfo.validate).to be false
+      end
+
+      it "adds to @errors" do
+        modinfo.validate
+        expect(modinfo.errors).to include("Invalid fileType: FOO")
+      end
+    end
+
+    context "when version is blank" do
+      before { modinfo.read(modinfo_data.merge(version: "")) }
+
+      it "returns true" do
+        expect(modinfo.validate).to be true
+      end
+
+      it "does not add to @errors" do
+        modinfo.validate
+        expect(modinfo.errors).to be_empty
+      end
+
+      it "adds to @warnings" do
+        modinfo.validate
+        expect(modinfo.warnings).to eq(["Version should be a version string"])
+      end
+    end
+
+    context "when version is invalid" do
+      before { modinfo.read(modinfo_data.merge(version: "FOO")) }
+
+      it "returns false" do
+        expect(modinfo.validate).to be true
+      end
+
+      it "adds to @warnings" do
+        modinfo.validate
+        expect(modinfo.warnings).to eq(["Version should be a version string"])
+      end
+    end
+
+    %w[name author description].each do |key|
+      context "when #{key} is blank" do
+        before { modinfo.read(modinfo_data.merge(key.to_sym => "")) }
+
+        it "returns false" do
+          expect(modinfo.validate).to be false
+        end
+
+        it "adds to @errors" do
+          modinfo.validate
+          expect(modinfo.errors).to include("#{key.capitalize} cannot be blank")
+        end
+      end
+    end
+
+    %w[fileURL imageURL readmeURL].each do |key|
+      context "when #{key} URL is invalid" do
+        before { modinfo.read(modinfo_data.merge(key.to_sym => "invalid")) }
+
+        it "returns false" do
+          expect(modinfo.validate).to be false
+        end
+
+        it "adds to @errors" do
+          modinfo.validate
+          expect(modinfo.errors).to include("Invalid URL #{key.capitalize}: invalid")
+        end
+      end
+    end
+  end
 end
