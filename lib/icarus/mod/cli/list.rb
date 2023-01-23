@@ -10,9 +10,16 @@ module Icarus
       class List < SubcommandBase
         desc "modinfo", "Displays data from 'meta/modinfo/list'"
         def modinfo
-          modinfos = Firestore.new.list(:modinfo)
-          puts modinfos
-          puts "Total: #{modinfos.count}" if verbose > 1
+          modinfo_array = Firestore.new.list(:modinfo)
+          puts modinfo_array
+          puts "Total: #{modinfo_array.count}" if verbose > 1
+        end
+
+        desc "proginfo", "Displays data from 'meta/proginfo/list'"
+        def proginfo
+          proginfo_array = Firestore.new.list(:proginfo)
+          puts proginfo_array
+          puts "Total: #{proginfo_array.count}" if verbose > 1
         end
 
         desc "repos", "Displays data from 'meta/repos/list'"

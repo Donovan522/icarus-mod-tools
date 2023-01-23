@@ -8,22 +8,17 @@ RSpec.describe Icarus::Mod::Tools::ModSync do
 
   let(:firestore_double) { instance_double(Icarus::Mod::Firestore) }
   let(:url) { "https://raw.githubusercontent.com/author/mod/master/modinfo.json" }
-  let(:modinfo) { Icarus::Mod::Tools::Modinfo.new(File.read("spec/fixtures/modinfo.json")) }
-  let(:modinfo_array) { [modinfo] }
+  let(:modinfo_data) { JSON.parse(File.read("spec/fixtures/modinfo.json"), symbolize_names: true) }
+  let(:modinfo) { Icarus::Mod::Tools::Modinfo.new(modinfo_data[:mods].first) }
 
   before do
     allow(firestore_double).to receive(:mods).and_return([])
-    allow(firestore_double).to receive(:modinfo_array).and_return([url])
-    allow(firestore_double).to receive(:find_mod).and_return(modinfo)
+    allow(firestore_double).to receive(:find_by_type).and_return(modinfo)
     allow(firestore_double).to receive(:update).and_return(true)
     allow(firestore_double).to receive(:delete).and_return(true)
     allow(Icarus::Mod::Firestore).to receive(:new).and_return(firestore_double)
-    # rubocop:disable RSpec/SubjectStub - we're stubbing the helper method which is tested elsewhere
-    allow(modsync).to receive(:retrieve_from_url).with(url).and_return(
-      JSON.parse(File.read("spec/fixtures/modinfo_array.json"), symbolize_names: true)
-    )
-    # rubocop:enable RSpec/SubjectStub
-    modsync.instance_variable_set(:@modinfo_array, modinfo_array)
+
+    modsync.instance_variable_set(:@modinfo_array, [modinfo])
   end
 
   describe "#mods" do
@@ -41,10 +36,10 @@ RSpec.describe Icarus::Mod::Tools::ModSync do
   end
 
   describe "#find_mod" do
-    it "calls Firestore.find_mod" do
+    it "calls Firestore.find_by_type with :mod" do
       modsync.find_mod(modinfo)
 
-      expect(firestore_double).to have_received(:find_mod).with(name: "Test Icarus Mod", author: "Test User")
+      expect(firestore_double).to have_received(:find_by_type).with(type: "mods", name: "Test Icarus Mod", author: "Test User")
     end
   end
 

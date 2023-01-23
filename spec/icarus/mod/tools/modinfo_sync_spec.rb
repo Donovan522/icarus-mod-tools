@@ -11,8 +11,8 @@ RSpec.describe Icarus::Mod::Tools::ModinfoSync do
   let(:github_double) { instance_double(Icarus::Mod::Github) }
   let(:url) { "https://github.com/author/mod" }
   let(:modinfo_url) { "https://raw.githubusercontent.com/author/mod/master/modinfo.json" }
-  let(:raw_modinfo) { File.read("spec/fixtures/modinfo.json") }
-  let(:modinfo) { Icarus::Mod::Tools::Modinfo.new(raw_modinfo) }
+  let(:modinfo_data) { JSON.parse(File.read("spec/fixtures/modinfo.json"), symbolize_names: true) }
+  let(:modinfo) { Icarus::Mod::Tools::Modinfo.new(modinfo_data[:mods].first) }
   let(:modinfo_array) { [modinfo] }
 
   before do
@@ -25,9 +25,7 @@ RSpec.describe Icarus::Mod::Tools::ModinfoSync do
     allow(Icarus::Mod::Github).to receive(:new).and_return(github_double)
 
     # rubocop:disable RSpec/SubjectStub - we're stubbing the helper method which is tested elsewhere
-    allow(modinfo_sync).to receive(:retrieve_from_url).with(url).and_return(
-      JSON.parse(File.read("spec/fixtures/modinfo_array.json"), symbolize_names: true)
-    )
+    allow(modinfo_sync).to receive(:retrieve_from_url).with(url).and_return(modinfo_data)
     # rubocop:enable RSpec/SubjectStub
   end
 
@@ -49,7 +47,7 @@ RSpec.describe Icarus::Mod::Tools::ModinfoSync do
 
   describe "#modinfo" do
     it "returns a modinfo JSON array" do
-      expect(modinfo_sync.modinfo(url)).to eq(JSON.parse(File.read("spec/fixtures/modinfo_array.json"), symbolize_names: true))
+      expect(modinfo_sync.modinfo(url)).to eq(modinfo_data)
     end
   end
 

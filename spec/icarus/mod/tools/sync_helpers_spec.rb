@@ -13,7 +13,7 @@ RSpec.describe Icarus::Mod::Tools::SyncHelpers do
   describe "#retrieve_from_url" do
     let(:url) { "https://raw.githubusercontent.com/Donovan522/Icarus-Mods/main/modinfo.json" }
     let(:uri) { URI(url) }
-    let(:modinfo_json) { File.read("spec/fixtures/modinfo_array.json") }
+    let(:modinfo_json) { File.read("spec/fixtures/baseinfo_array.json") }
     let(:modinfo_array) { JSON.parse(modinfo_json, symbolize_names: true) }
 
     context "when the URL is valid" do

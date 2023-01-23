@@ -38,6 +38,9 @@ Metrics/AbcSize:
   Exclude:
     - lib/icarus/mod/cli/*.rb # Thor command files
 
+Metrics/ClassLength:
+  Enabled: false
+
 Metrics/MethodLength:
   Max: 50
 

@@ -17,5 +17,7 @@ RSpec.describe Icarus::Mod::Firestore do
     it { is_expected.to be_a(described_class) }
     it { is_expected.to respond_to(:client) }
     it { is_expected.to respond_to(:repos) }
+    it { is_expected.to respond_to(:mods) }
+    it { is_expected.to respond_to(:progs) }
   end
 end

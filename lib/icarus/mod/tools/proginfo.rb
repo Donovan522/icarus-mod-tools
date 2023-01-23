@@ -6,12 +6,10 @@ module Icarus
   module Mod
     module Tools
       # Sync methods
-      class Modinfo < Baseinfo
-        HASHKEYS = %i[name author version compatibility description long_description fileType fileURL imageURL readmeURL].freeze
-
+      class Proginfo < Baseinfo
         # rubocop:disable Naming/MethodName
         def fileType
-          @data[:fileType] || "pak"
+          @data[:fileType] || "zip"
         end
         # rubocop:enable Naming/MethodName
       end
