@@ -54,7 +54,7 @@ RSpec.describe Icarus::Mod::Tools::ModinfoSync do
   describe "#modinfo_data" do
     context "when the repository is on Github" do
       it "returns an array of modinfo urls" do
-        expect(modinfo_sync.modinfo_data([url])).to eq([modinfo_url])
+        expect(modinfo_sync.data([url])).to eq([modinfo_url])
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe Icarus::Mod::Tools::ModinfoSync do
       let(:url) { "https://gitlab.com/author/mod" }
 
       it "returns an empty array" do
-        expect(modinfo_sync.modinfo_data([url])).to eq([])
+        expect(modinfo_sync.data([url])).to eq([])
       end
     end
   end

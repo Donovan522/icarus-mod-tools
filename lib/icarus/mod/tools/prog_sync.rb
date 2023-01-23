@@ -18,8 +18,8 @@ module Icarus
           @firestore.progs
         end
 
-        def proginfo_array
-          @proginfo_array ||= @firestore.proginfo_list.map do |url|
+        def info_array
+          @info_array ||= @firestore.proginfo_list.map do |url|
             retrieve_from_url(url)[:programs].map { |prog| Proginfo.new(prog) if prog[:name] =~ /[a-z0-9]+/i }
           rescue Icarus::Mod::Tools::RequestFailed
             warn "Skipped; Failed to retrieve #{url}"
@@ -30,12 +30,12 @@ module Icarus
           end.flatten.compact
         end
 
-        def find_prog(proginfo)
+        def find(proginfo)
           @firestore.find_by_type(type: "progs", name: proginfo.name, author: proginfo.author)&.id
         end
 
-        def find_proginfo(proginfo)
-          @proginfo_array.find { |prog| prog.name == proginfo.name }
+        def find_info(proginfo)
+          @info_array.find { |prog| prog.name == proginfo.name }
         end
 
         def update(proginfo)

@@ -18,7 +18,7 @@ RSpec.describe Icarus::Mod::Tools::ModSync do
     allow(firestore_double).to receive(:delete).and_return(true)
     allow(Icarus::Mod::Firestore).to receive(:new).and_return(firestore_double)
 
-    modsync.instance_variable_set(:@modinfo_array, [modinfo])
+    modsync.instance_variable_set(:@info_array, [modinfo])
   end
 
   describe "#mods" do
@@ -29,15 +29,15 @@ RSpec.describe Icarus::Mod::Tools::ModSync do
     end
   end
 
-  describe "#modinfo_array" do
+  describe "#info_array" do
     it "returns an array of Modinfo objects" do
-      expect(modsync.modinfo_array).to all(be_a(Icarus::Mod::Tools::Modinfo))
+      expect(modsync.info_array).to all(be_a(Icarus::Mod::Tools::Modinfo))
     end
   end
 
-  describe "#find_mod" do
+  describe "#find" do
     it "calls Firestore.find_by_type with :mod" do
-      modsync.find_mod(modinfo)
+      modsync.find(modinfo)
 
       expect(firestore_double).to have_received(:find_by_type).with(type: "mods", name: "Test Icarus Mod", author: "Test User")
     end
@@ -45,7 +45,7 @@ RSpec.describe Icarus::Mod::Tools::ModSync do
 
   describe "#find_modinfo" do
     it "returns a Modinfo object" do
-      expect(modsync.find_modinfo(modinfo)).to be_a(Icarus::Mod::Tools::Modinfo)
+      expect(modsync.find_info(modinfo)).to be_a(Icarus::Mod::Tools::Modinfo)
     end
   end
 

@@ -15,6 +15,14 @@ module Icarus
           puts firestore.update(:modinfo, payload, merge: true) ? "Success" : "Failure"
         end
 
+        desc "proginfo", "Adds an entry to 'meta/proginfo/list'"
+        def proginfo(item)
+          firestore = Firestore.new
+          payload = [firestore.list(:proginfo), item].flatten.compact
+
+          puts firestore.update(:proginfo, payload, merge: true) ? "Success" : "Failure"
+        end
+
         desc "repos", "Adds an entry to 'meta/repos/list'"
         def repos(item)
           firestore = Firestore.new

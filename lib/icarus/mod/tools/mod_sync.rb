@@ -18,8 +18,8 @@ module Icarus
           @firestore.mods
         end
 
-        def modinfo_array
-          @modinfo_array ||= @firestore.modinfo_list.map do |url|
+        def info_array
+          @info_array ||= @firestore.modinfo_list.map do |url|
             retrieve_from_url(url)[:mods].map { |mod| Modinfo.new(mod) if mod[:name] =~ /[a-z0-9]+/i }
           rescue Icarus::Mod::Tools::RequestFailed
             warn "Skipped; Failed to retrieve #{url}"
@@ -30,12 +30,12 @@ module Icarus
           end.flatten.compact
         end
 
-        def find_mod(modinfo)
+        def find(modinfo)
           @firestore.find_by_type(type: "mods", name: modinfo.name, author: modinfo.author)&.id
         end
 
-        def find_modinfo(modinfo)
-          @modinfo_array.find { |mod| mod.name == modinfo.name }
+        def find_info(modinfo)
+          @info_array.find { |mod| mod.name == modinfo.name }
         end
 
         def update(modinfo)

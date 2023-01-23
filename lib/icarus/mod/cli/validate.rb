@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "tools/modinfo_validate"
+require "tools/validator"
 
 module Icarus
   module Mod
@@ -9,35 +9,46 @@ module Icarus
       class Validate < SubcommandBase
         desc "modinfo", "Reads modinfo data from 'meta/modinfo/list' and Validates syntax of modfiles"
         def modinfo
-          exit_code = 0
-          modinfo_validate = Icarus::Mod::Tools::ModinfoValidate.new
+          validate(:modinfo)
+        end
 
-          puts "Validating Entries..." if verbose?
-          max_length = modinfo_validate.modinfo_array.map { |modinfo| modinfo.uniq_name.length }.max
+        desc "proginfo", "Reads proginfo data from 'meta/proginfo/list' and Validates syntax of progfiles"
+        def proginfo
+          validate(:proginfo)
+        end
 
-          modinfo_validate.modinfo_array.each do |modinfo|
-            print Paint[format("%s %-#{max_length}s", "Running validation steps on", modinfo.uniq_name), :cyan, :bright] if verbose > 1
+        no_commands do
+          def validate(type)
+            exit_code = 0
+            validator = Icarus::Mod::Tools::Validator.new(type)
 
-            modinfo.validate
+            puts "Validating Entries..." if verbose?
+            max_length = validator.array.map { |info| info.uniq_name.length }.max + 1
 
-            if modinfo.errors.empty? && modinfo.warnings.empty?
-              puts Paint["SUCCESS", :green, :bright] if verbose > 1
-              next
-            end
+            validator.array.each do |info|
+              print Paint[format("%s %-#{max_length}s", "Running validation steps on", info.uniq_name), :cyan, :bright] if verbose > 1
 
-            if modinfo.errors.any?
-              exit_code = 1
-              puts Paint["ERROR", :red, :bright] if verbose? && verbose > 1
-              warn modinfo.errors.map { |error| Paint[error, :red] }.join("\n")
+              info.valid?
+
+              unless info.errors? || info.warnings?
+                puts Paint["SUCCESS", :green, :bright] if verbose > 1
+                next
+              end
+
+              if info.errors?
+                exit_code = 1
+                puts Paint["ERROR", :red, :bright] if verbose? && verbose > 1
+                puts info.errors.map { |error| Paint["#{error} in #{info.uniq_name}", :red] }.join("\n")
+                puts "\n" if verbose > 1
+              end
+
+              puts Paint["WARNING", :yellow, :bright] if info.warnings.any? && verbose > 1
+              puts info.warnings.map { |warning| Paint["#{warning} in #{info.uniq_name}", :yellow] }.join("\n")
               puts "\n" if verbose > 1
             end
 
-            puts Paint["WARNING", :yellow, :bright] if modinfo.warnings.any? && verbose > 1
-            puts modinfo.warnings.map { |warning| Paint["#{warning} in #{modinfo.uniq_name}", :yellow] }.join("\n")
-            puts "\n" if verbose > 1
+            exit exit_code
           end
-
-          exit exit_code
         end
       end
     end

@@ -5,7 +5,7 @@ module Icarus
     module Tools
       # Base class for Modinfo and Proginfo
       class Baseinfo
-        attr_reader :data, :errors, :id, :created_at, :updated_at, :warnings
+        attr_reader :data, :id, :created_at, :updated_at
 
         HASHKEYS = %i[name author version compatibility description fileType fileURL imageURL readmeURL].freeze
 
@@ -23,8 +23,24 @@ module Icarus
           @data = data.is_a?(String) ? JSON.parse(data, symbolize_names: true) : data
         end
 
+        def errors
+          @errors.compact.uniq
+        end
+
+        def errors?
+          @errors.compact.any?
+        end
+
+        def warnings
+          @warnings.compact.uniq
+        end
+
+        def warnings?
+          @warnings.compact.any?
+        end
+
         def uniq_name
-          "#{author}/#{name}"
+          "#{author.strip}/#{name.strip}"
         end
 
         def to_json(*args)
@@ -35,7 +51,7 @@ module Icarus
           HASHKEYS.each_with_object({}) { |key, hash| hash[key] = @data[key] }
         end
 
-        def validate
+        def valid?
           @warnings << "Version should be a version string" unless validate_version(version)
 
           %w[name author description].each do |key|
@@ -48,10 +64,10 @@ module Icarus
             @errors << "Invalid URL #{key.capitalize}: #{@data[key.to_sym] || "blank"}" unless validate_url(@data[key.to_sym])
           end
 
-          @errors.empty?
+          !errors?
         end
 
-        def method_missing(method_name, *_args, &)
+        def method_missing(method_name, *_args, &_block)
           @data[method_name.to_sym]&.strip
         end
 
@@ -61,6 +77,10 @@ module Icarus
 
         private
 
+        def filetype_pattern
+          /(zip|pak|exmodz?)/i
+        end
+
         def validate_url(url)
           return true if url.nil? || url.empty?
 
@@ -68,7 +88,7 @@ module Icarus
         end
 
         def validate_filetype(filetype)
-          %w[pak zip exmod].include?(filetype.downcase)
+          filetype.match?(filetype_pattern)
         end
 
         def validate_string(string)

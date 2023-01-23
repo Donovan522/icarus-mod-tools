@@ -38,11 +38,17 @@ Metrics/AbcSize:
   Exclude:
     - lib/icarus/mod/cli/*.rb # Thor command files
 
+Metrics/BlockLength:
+  Enabled: false
+
 Metrics/ClassLength:
   Enabled: false
 
 Metrics/MethodLength:
-  Max: 50
+  Enabled: false
+
+Naming/BlockForwarding:
+  EnforcedStyle: explicit
 
 RSpec/MultipleMemoizedHelpers:
   Enabled: false

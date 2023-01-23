@@ -29,7 +29,7 @@ module Icarus
           retrieve_from_url(url)
         end
 
-        def modinfo_data(repositories, verbose: false)
+        def data(repositories, verbose: false)
           repositories.map do |repo|
             print "searching #{repo}..." if verbose
 

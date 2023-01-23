@@ -12,6 +12,12 @@ module Icarus
           @data[:fileType] || "zip"
         end
         # rubocop:enable Naming/MethodName
+
+        private
+
+        def filetype_pattern
+          /(zip|exe)/i
+        end
       end
     end
   end

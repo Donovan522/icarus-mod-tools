@@ -18,7 +18,7 @@ RSpec.describe Icarus::Mod::Tools::ProgSync do
     allow(firestore_double).to receive(:delete).and_return(true)
     allow(Icarus::Mod::Firestore).to receive(:new).and_return(firestore_double)
 
-    progsync.instance_variable_set(:@proginfo_array, [proginfo])
+    progsync.instance_variable_set(:@info_array, [proginfo])
   end
 
   describe "#progs" do
@@ -29,23 +29,23 @@ RSpec.describe Icarus::Mod::Tools::ProgSync do
     end
   end
 
-  describe "#proginfo_array" do
+  describe "#info_array" do
     it "returns an array of Proginfo objects" do
-      expect(progsync.proginfo_array).to all(be_a(Icarus::Mod::Tools::Proginfo))
+      expect(progsync.info_array).to all(be_a(Icarus::Mod::Tools::Proginfo))
     end
   end
 
-  describe "#find_prog" do
+  describe "#find" do
     it "calls Firestore.find_by_type with :prog" do
-      progsync.find_prog(proginfo)
+      progsync.find(proginfo)
 
       expect(firestore_double).to have_received(:find_by_type).with(type: "progs", name: "Test Icarus Modding Tool", author: "Test User")
     end
   end
 
-  describe "#find_proginfo" do
+  describe "#find_info" do
     it "returns a Proginfo object" do
-      expect(progsync.find_proginfo(proginfo)).to be_a(Icarus::Mod::Tools::Proginfo)
+      expect(progsync.find_info(proginfo)).to be_a(Icarus::Mod::Tools::Proginfo)
     end
   end
 

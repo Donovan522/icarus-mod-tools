@@ -3,8 +3,8 @@ require "tools/modinfo"
 RSpec.describe Icarus::Mod::Tools::Modinfo do
   subject(:modinfo) { described_class.new(modinfo_data) }
 
-  let(:modinfo_data) { JSON.parse(File.read("spec/fixtures/modinfo.json"), symbolize_names: true) }
-  let(:modinfo_keys) { modinfo_data[:mods].first.keys }
+  let(:modinfo_data) { JSON.parse(File.read("spec/fixtures/modinfo.json"), symbolize_names: true)[:mods].first }
+  let(:modinfo_keys) { modinfo_data.keys }
 
   describe "#to_h" do
     it "returns a valid baseinfo Hash" do
@@ -14,10 +14,20 @@ RSpec.describe Icarus::Mod::Tools::Modinfo do
 
   describe "#fileType" do
     context "when fileType is not set" do
-      before { modinfo_data[:mods].first.delete(:fileType) }
+      before { modinfo_data.delete(:fileType) }
 
       it "returns a default fileType" do
         expect(modinfo.fileType).to eq("pak")
+      end
+    end
+  end
+
+  describe "#valid?" do
+    %w[ZIP PAK EXMOD EXMODZ].each do |filetype|
+      context "when fileType is '#{filetype}'" do
+        before { modinfo_data[:fileType] = filetype }
+
+        it { is_expected.to be_valid }
       end
     end
   end

@@ -3,7 +3,7 @@ require "tools/baseinfo"
 RSpec.describe Icarus::Mod::Tools::Baseinfo do
   subject(:baseinfo) { described_class.new(baseinfo_data) }
 
-  let(:baseinfo_array) { JSON.parse(File.read("spec/fixtures/baseinfo_array.json"), symbolize_names: true)[:info] }
+  let(:baseinfo_array) { JSON.parse(File.read("spec/fixtures/baseinfo.json"), symbolize_names: true)[:mods] }
   let(:baseinfo_data) { baseinfo_array.first }
 
   describe "#read" do
@@ -52,19 +52,49 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
     end
   end
 
-  describe "#validate" do
+  describe "#errors?" do
+    before { baseinfo.instance_variable_set(:@errors, errors) }
+
+    context "when @errors is empty" do
+      let(:errors) { [] }
+
+      it "returns false" do
+        expect(baseinfo.errors?).to be false
+      end
+    end
+
+    context "when @errors is not empty" do
+      let(:errors) { %w[foo bar] }
+
+      it "returns true" do
+        expect(baseinfo.errors?).to be true
+      end
+    end
+  end
+
+  describe "#errors" do
+    let(:errors) { ["foo", "bar", nil, "foo", "bat"] }
+
+    before { baseinfo.instance_variable_set(:@errors, errors) }
+
+    it "returns the cleaned up @errors array" do
+      expect(baseinfo.errors).to eq(%w[foo bar bat])
+    end
+  end
+
+  describe "#valid?" do
     context "when given valid Baseinfo data" do
       it "returns true" do
-        expect(baseinfo.validate).to be true
+        expect(baseinfo.valid?).to be true
       end
 
       it "does not add to @errors" do
-        baseinfo.validate
+        baseinfo.valid?
         expect(baseinfo.errors).to be_empty
       end
 
       it "does not add to warnings" do
-        baseinfo.validate
+        baseinfo.valid?
         expect(baseinfo.warnings).to be_empty
       end
     end
@@ -73,11 +103,11 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
       before { baseinfo.read(baseinfo_data.merge(fileType: "")) }
 
       it "returns false" do
-        expect(baseinfo.validate).to be false
+        expect(baseinfo.valid?).to be false
       end
 
       it "adds to @errors" do
-        baseinfo.validate
+        baseinfo.valid?
         expect(baseinfo.errors).to include("Invalid fileType: ")
       end
     end
@@ -86,11 +116,11 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
       before { baseinfo.read(baseinfo_data.merge(fileType: "FOO")) }
 
       it "returns false" do
-        expect(baseinfo.validate).to be false
+        expect(baseinfo.valid?).to be false
       end
 
       it "adds to @errors" do
-        baseinfo.validate
+        baseinfo.valid?
         expect(baseinfo.errors).to include("Invalid fileType: FOO")
       end
     end
@@ -99,16 +129,16 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
       before { baseinfo.read(baseinfo_data.merge(version: "")) }
 
       it "returns true" do
-        expect(baseinfo.validate).to be true
+        expect(baseinfo.valid?).to be true
       end
 
       it "does not add to @errors" do
-        baseinfo.validate
+        baseinfo.valid?
         expect(baseinfo.errors).to be_empty
       end
 
       it "adds to @warnings" do
-        baseinfo.validate
+        baseinfo.valid?
         expect(baseinfo.warnings).to eq(["Version should be a version string"])
       end
     end
@@ -117,11 +147,11 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
       before { baseinfo.read(baseinfo_data.merge(version: "FOO")) }
 
       it "returns false" do
-        expect(baseinfo.validate).to be true
+        expect(baseinfo.valid?).to be true
       end
 
       it "adds to @warnings" do
-        baseinfo.validate
+        baseinfo.valid?
         expect(baseinfo.warnings).to eq(["Version should be a version string"])
       end
     end
@@ -131,11 +161,11 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
         before { baseinfo.read(baseinfo_data.merge(key.to_sym => "")) }
 
         it "returns false" do
-          expect(baseinfo.validate).to be false
+          expect(baseinfo.valid?).to be false
         end
 
         it "adds to @errors" do
-          baseinfo.validate
+          baseinfo.valid?
           expect(baseinfo.errors).to include("#{key.capitalize} cannot be blank")
         end
       end
@@ -146,11 +176,11 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
         before { baseinfo.read(baseinfo_data.merge(key.to_sym => "invalid")) }
 
         it "returns false" do
-          expect(baseinfo.validate).to be false
+          expect(baseinfo.valid?).to be false
         end
 
         it "adds to @errors" do
-          baseinfo.validate
+          baseinfo.valid?
           expect(baseinfo.errors).to include("Invalid URL #{key.capitalize}: invalid")
         end
       end
