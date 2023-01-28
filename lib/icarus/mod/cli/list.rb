@@ -15,11 +15,11 @@ module Icarus
           puts "Total: #{modinfo_array.count}" if verbose > 1
         end
 
-        desc "proginfo", "Displays data from 'meta/proginfo/list'"
-        def proginfo
-          proginfo_array = Firestore.new.list(:proginfo)
-          puts proginfo_array
-          puts "Total: #{proginfo_array.count}" if verbose > 1
+        desc "toolinfo", "Displays data from 'meta/toolinfo/list'"
+        def toolinfo
+          toolinfo_array = Firestore.new.list(:toolinfo)
+          puts toolinfo_array
+          puts "Total: #{toolinfo_array.count}" if verbose > 1
         end
 
         desc "repos", "Displays data from 'meta/repos/list'"
@@ -36,16 +36,16 @@ module Icarus
           list_for_type(:mods)
         end
 
-        desc "progs", "Displays data from 'progs'"
+        desc "tools", "Displays data from 'tools'"
         method_option :sort, type: :string, default: "name", desc: "Sort by field (name, author, etc.)"
         method_option :filter, type: :array, default: [], desc: "Filter by field (name, author, etc.)"
-        def progs
-          list_for_type(:progs)
+        def tools
+          list_for_type(:tools)
         end
 
         no_commands do
           def list_for_type(type)
-            klass = type == :mods ? Icarus::Mod::Tools::Modinfo : Icarus::Mod::Tools::Proginfo
+            klass = type == :mods ? Icarus::Mod::Tools::Modinfo : Icarus::Mod::Tools::Toolinfo
             valid_keys = klass::HASHKEYS + [:updated_at]
             sort_field = options[:sort]&.to_sym
             filter     = !options[:filter].empty?

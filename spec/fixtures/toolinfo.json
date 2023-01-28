@@ -1,11 +1,11 @@
 {
-  "programs": [
+  "tools": [
     {
       "name": "Test Icarus Modding Tool",
       "author": "Test User",
       "version": "1.0",
       "compatibility": "all",
-      "description": "A proginfo description used for testing",
+      "description": "A tool description used for testing",
       "fileType": "zip",
       "fileURL": "https://example.com/test/Icarus-Mods/raw/main/TestTool.zip",
       "imageURL": "https://example.com/test/images/test_image.png",

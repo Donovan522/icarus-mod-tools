@@ -12,9 +12,9 @@ module Icarus
           validate(:modinfo)
         end
 
-        desc "proginfo", "Reads proginfo data from 'meta/proginfo/list' and Validates syntax of progfiles"
-        def proginfo
-          validate(:proginfo)
+        desc "toolinfo", "Reads Toolinfo data from 'meta/toolinfo/list' and Validates syntax of toolfiles"
+        def toolinfo
+          validate(:toolinfo)
         end
 
         no_commands do

@@ -6,7 +6,7 @@ module Icarus
   module Mod
     module Tools
       # Sync methods
-      class Proginfo < Baseinfo
+      class Toolinfo < Baseinfo
         # rubocop:disable Naming/MethodName
         def fileType
           @data[:fileType] || "zip"

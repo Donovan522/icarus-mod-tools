@@ -2,9 +2,9 @@
 
 require "firestore"
 require "github"
-require "tools/sync/modinfo"
+require "tools/sync/modinfo_list"
 
-RSpec.describe Icarus::Mod::Tools::Sync::Modinfo do
+RSpec.describe Icarus::Mod::Tools::Sync::ModinfoList do
   subject(:modinfo_sync) { described_class.new }
 
   let(:firestore_double) { instance_double(Icarus::Mod::Firestore) }

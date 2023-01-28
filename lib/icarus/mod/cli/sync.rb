@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "tools/sync/modinfo"
-require "tools/sync/proginfo"
+require "tools/sync/modinfo_list"
+require "tools/sync/toolinfo_list"
 require "tools/sync/mods"
-require "tools/sync/progs"
+require "tools/sync/tools"
 
 module Icarus
   module Mod
@@ -17,11 +17,11 @@ module Icarus
 
         desc "all", "Run all sync jobs"
         def all
-          puts "Running Proginfo Sync..." if verbose?
-          invoke :proginfo
+          puts "Running Toolinfo Sync..." if verbose?
+          invoke :toolinfo
 
-          puts "Running Progs Sync..." if verbose?
-          invoke :progs
+          puts "Running Tools Sync..." if verbose?
+          invoke :tools
 
           puts "Running Modinfo Sync..." if verbose?
           invoke :modinfo
@@ -35,9 +35,9 @@ module Icarus
           sync_info(:modinfo)
         end
 
-        desc "proginfo", "Reads from 'meta/repos/list' and Syncs any proginfo files we find (github only for now)"
-        def proginfo
-          sync_info(:proginfo)
+        desc "toolinfo", "Reads from 'meta/repos/list' and Syncs any toolinfo files we find (github only for now)"
+        def toolinfo
+          sync_info(:toolinfo)
         end
 
         desc "mods", "Reads from 'meta/modinfo/list' and updates the 'mods' database accordingly"
@@ -46,10 +46,10 @@ module Icarus
           sync_list(:mods)
         end
 
-        desc "progs", "Reads from 'meta/proginfo/list' and updates the 'progs' database accordingly"
-        method_option :check, type: :boolean, default: false, desc: "Validate proginfo without applying changes"
-        def progs
-          sync_list(:progs)
+        desc "tools", "Reads from 'meta/toolinfo/list' and updates the 'tools' database accordingly"
+        method_option :check, type: :boolean, default: false, desc: "Validate toolinfo without applying changes"
+        def tools
+          sync_list(:tools)
         end
 
         no_commands do
@@ -58,7 +58,7 @@ module Icarus
           end
 
           def sync_info(type)
-            sync = (type == :modinfo ? Icarus::Mod::Tools::Sync::Modinfo : Icarus::Mod::Tools::Sync::Proginfo).new(client: firestore)
+            sync = (type == :modinfo ? Icarus::Mod::Tools::Sync::ModinfoList : Icarus::Mod::Tools::Sync::ToolinfoList).new(client: firestore)
 
             puts "Retrieving repository Data..." if verbose?
             repositories = sync.repositories
@@ -83,7 +83,7 @@ module Icarus
           end
 
           def sync_list(type)
-            sync = (type == :mods ? Icarus::Mod::Tools::Sync::Mods : Icarus::Mod::Tools::Sync::Progs).new(client: firestore)
+            sync = (type == :mods ? Icarus::Mod::Tools::Sync::Mods : Icarus::Mod::Tools::Sync::Tools).new(client: firestore)
 
             puts "Retrieving Info Data..." if verbose?
             info_array = sync.info_array

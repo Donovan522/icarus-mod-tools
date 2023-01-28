@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## History (reverse chronological order)
 
+### v1.9 - 2023-01-28
+
+- Renamed `Progs` to `Tools`
+
 ### v1.8 - 2023-01-27
 
 - Added support for `proginfo.json` files

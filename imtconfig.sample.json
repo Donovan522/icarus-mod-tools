@@ -14,10 +14,10 @@
     },
     "collections": {
       "modinfo": "meta/modinfo",
-      "proginfo": "meta/proginfo",
+      "toolinfo": "meta/toolinfo",
       "repositories": "meta/repos",
       "mods": "mods",
-      "progs": "progs"
+      "tools": "tools"
     }
   },
   "github": {

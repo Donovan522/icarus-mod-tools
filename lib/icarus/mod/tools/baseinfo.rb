@@ -3,7 +3,7 @@
 module Icarus
   module Mod
     module Tools
-      # Base class for Modinfo and Proginfo
+      # Base class for Modinfo and Toolinfo
       class Baseinfo
         attr_reader :data, :id, :created_at, :updated_at
 

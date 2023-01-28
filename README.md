@@ -71,7 +71,7 @@ Options:
 Commands:
   imt add help [COMMAND]  # Describe subcommands or one specific subcommand
   imt add modinfo         # Adds an entry to 'meta/modinfo/list'
-  imt add proginfo        # Adds an entry to 'meta/proginfo/list'
+  imt add toolinfo        # Adds an entry to 'meta/toolinfo/list'
   imt add repos           # Adds an entry to 'meta/repos/list'
 
 Options:
@@ -89,8 +89,8 @@ Commands:
   imt list help [COMMAND]  # Describe subcommands or one specific subcommand
   imt list modinfo         # Displays data from 'meta/modinfo/list'
   imt list mods            # Displays data from 'mods'
-  imt list proginfo        # Displays data from 'meta/proginfo/list'
-  imt list progs           # Displays data from 'progs'
+  imt list toolinfo        # Displays data from 'meta/toolinfo/list'
+  imt list tools           # Displays data from 'tools'
   imt list repos           # Displays data from 'meta/repos/list'
 
 Options:
@@ -109,8 +109,8 @@ Commands:
   imt sync help [COMMAND]  # Describe subcommands or one specific subcommand
   imt sync modinfo         # Reads from 'meta/repos/list' and Syncs any modinfo files we find (github only for now)
   imt sync mods            # Reads from 'meta/modinfo/list' and updates the 'mods' database accordingly
-  imt sync proginfo        # Reads from 'meta/repos/list' and Syncs any proginfo files we find (github only for now)
-  imt sync progs           # Reads from 'meta/proginfo/list' and updates the 'progs' database accordingly
+  imt sync toolinfo        # Reads from 'meta/repos/list' and Syncs any toolinfo files we find (github only for now)
+  imt sync tools           # Reads from 'meta/toolinfo/list' and updates the 'tools' database accordingly
 
 Options:
   -C, [--config=CONFIG]            # Path to the config file

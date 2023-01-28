@@ -11,8 +11,8 @@ module Icarus
           @array = case type
                    when :modinfo
                      Sync::Mods.new.info_array
-                   when :proginfo
-                     Sync::Progs.new.info_array
+                   when :toolinfo
+                     Sync::Tools.new.info_array
                    else
                      raise ArgumentError, "Invalid type: #{type}"
                    end

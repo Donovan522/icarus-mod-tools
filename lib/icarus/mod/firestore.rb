@@ -2,7 +2,7 @@
 
 require "google/cloud/firestore"
 require "tools/modinfo"
-require "tools/proginfo"
+require "tools/toolinfo"
 
 module Icarus
   module Mod
@@ -23,16 +23,16 @@ module Icarus
         @modinfo ||= list(:modinfo)
       end
 
-      def proginfo
-        @proginfo ||= list(:proginfo)
+      def toolinfo
+        @toolinfo ||= list(:toolinfo)
       end
 
       def mods
         @mods ||= list(:mods)
       end
 
-      def progs
-        @progs ||= list(:progs)
+      def tools
+        @tools ||= list(:tools)
       end
 
       def find_by_type(type:, name:, author:)
@@ -47,11 +47,11 @@ module Icarus
 
       def list(type)
         case type.to_sym
-        when :modinfo, :proginfo, :repositories
+        when :modinfo, :toolinfo, :repositories
           get_list(type)
-        when :mods, :progs
+        when :mods, :tools
           @client.col(collections.send(type)).get.map do |doc|
-            klass = type == :mods ? Icarus::Mod::Tools::Modinfo : Icarus::Mod::Tools::Proginfo
+            klass = type == :mods ? Icarus::Mod::Tools::Modinfo : Icarus::Mod::Tools::Toolinfo
             klass.new(doc.data, id: doc.document_id, created: doc.create_time, updated: doc.update_time)
           end
         else
@@ -71,12 +71,12 @@ module Icarus
         raise "You must specify a payload to update" if payload&.empty? || payload.nil?
 
         case type.to_sym
-        when :modinfo, :proginfo
+        when :modinfo, :toolinfo
           update_array = (send(type) + [payload]).flatten.uniq
           response = @client.doc(collections.send(type)).set({ list: update_array }, merge:) if update_array.any?
         when :repositories
           response = @client.doc(collections.repositories).set({ list: payload }, merge:)
-        when :mod, :prog
+        when :mod, :tool
           response = update_or_create(pluralize(type), payload, merge:)
         else
           raise "Invalid type: #{type}"
@@ -87,7 +87,7 @@ module Icarus
 
       def delete(type, payload)
         case type.to_sym
-        when :mod, :prog
+        when :mod, :tool
           response = @client.doc("#{collections.send(pluralize(type))}/#{payload.id}").delete
         else
           raise "Invalid type: #{type}"

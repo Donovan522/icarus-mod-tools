@@ -22,7 +22,7 @@ RSpec.describe Icarus::Mod::Tools::Sync::Helpers do
       end
 
       it "returns valid JSON data" do
-        expect(sync_helpers.retrieve_from_url(uri)).to eq(modinfo_array)
+        expect(sync_helpers.retrieve_from_url(url)).to eq(modinfo_array)
       end
     end
 
@@ -32,8 +32,22 @@ RSpec.describe Icarus::Mod::Tools::Sync::Helpers do
       end
 
       it "raises an error" do
-        expect { sync_helpers.retrieve_from_url(uri) }
+        expect { sync_helpers.retrieve_from_url(url) }
           .to raise_error(Icarus::Mod::Tools::Sync::RequestFailed, "HTTP Request failed for #{url} (404): Not Found")
+      end
+    end
+
+    context "when the URL is not a valid URI" do
+      it "raises an Invalid URI error" do
+        expect { sync_helpers.retrieve_from_url("foo") }
+          .to raise_error(Icarus::Mod::Tools::Sync::RequestFailed, "Invalid URI: 'foo'")
+      end
+    end
+
+    context "when the URL is nil" do
+      it "raises an Invalid URI error" do
+        expect { sync_helpers.retrieve_from_url(nil) }
+          .to raise_error(Icarus::Mod::Tools::Sync::RequestFailed, "Invalid URI: ''")
       end
     end
   end

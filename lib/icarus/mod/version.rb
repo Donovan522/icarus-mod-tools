@@ -2,6 +2,6 @@
 
 module Icarus
   module Mod
-    VERSION = "1.8.2.1"
+    VERSION = "1.9.0"
   end
 end

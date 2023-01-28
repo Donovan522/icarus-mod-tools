@@ -18,6 +18,6 @@ RSpec.describe Icarus::Mod::Firestore do
     it { is_expected.to respond_to(:client) }
     it { is_expected.to respond_to(:repos) }
     it { is_expected.to respond_to(:mods) }
-    it { is_expected.to respond_to(:progs) }
+    it { is_expected.to respond_to(:tools) }
   end
 end

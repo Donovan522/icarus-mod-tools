@@ -8,20 +8,22 @@ module Icarus
     module Tools
       module Sync
         # Sync methods
-        class Progs
+        class Tools
           include Helpers
 
           def initialize(client: nil)
             @firestore = client || Firestore.new
           end
 
-          def progs
-            @firestore.progs
+          def tools
+            @firestore.tools
           end
 
           def info_array
-            @info_array ||= @firestore.proginfo.map do |url|
-              retrieve_from_url(url)[:programs].map { |prog| Tools::Proginfo.new(prog) if prog[:name] =~ /[a-z0-9]+/i }
+            @info_array ||= @firestore.toolinfo.map do |url|
+              next unless url
+
+              retrieve_from_url(url)[:tools].map { |tool| Icarus::Mod::Tools::Toolinfo.new(tool) if tool[:name] =~ /[a-z0-9]+/i }
             rescue Icarus::Mod::Tools::Sync::RequestFailed
               warn "Skipped; Failed to retrieve #{url}"
               next
@@ -31,20 +33,20 @@ module Icarus
             end.flatten.compact
           end
 
-          def find(proginfo)
-            @firestore.find_by_type(type: "progs", name: proginfo.name, author: proginfo.author)&.id
+          def find(toolinfo)
+            @firestore.find_by_type(type: "tools", name: toolinfo.name, author: toolinfo.author)&.id
           end
 
-          def find_info(proginfo)
-            @info_array.find { |prog| prog.name == proginfo.name }
+          def find_info(toolinfo)
+            @info_array.find { |tool| tool.name == toolinfo.name }
           end
 
-          def update(proginfo)
-            @firestore.update(:prog, proginfo, merge: false)
+          def update(toolinfo)
+            @firestore.update(:tool, toolinfo, merge: false)
           end
 
-          def delete(proginfo)
-            @firestore.delete(:prog, proginfo)
+          def delete(toolinfo)
+            @firestore.delete(:tool, toolinfo)
           end
         end
       end

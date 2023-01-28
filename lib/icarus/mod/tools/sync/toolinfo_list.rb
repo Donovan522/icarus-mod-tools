@@ -9,7 +9,7 @@ module Icarus
     module Tools
       module Sync
         # Sync methods
-        class Modinfo
+        class ToolinfoList
           include Helpers
 
           def initialize(client: nil)
@@ -22,11 +22,11 @@ module Icarus
             @firestore.repos
           end
 
-          def update(modinfo_array)
-            @firestore.update(:modinfo, modinfo_array)
+          def update(toolinfo_array)
+            @firestore.update(:toolinfo, toolinfo_array)
           end
 
-          def modinfo(url)
+          def toolinfo(url)
             retrieve_from_url(url)
           end
 
@@ -37,15 +37,15 @@ module Icarus
               case repo
               when /github/
                 @github.repository = repo
-                modinfo_url = @github.find("modinfo.json")
+                toolinfo_url = @github.find("toolinfo.json")
 
-                unless modinfo_url
-                  puts "Skipped...no modinfo.json" if verbose
+                unless toolinfo_url
+                  puts "Skipped...no toolinfo.json" if verbose
                   next
                 end
 
                 puts "Found!" if verbose
-                modinfo_url
+                toolinfo_url
               else
                 puts "Skipped...repository type not supported yet" if verbose
               end
