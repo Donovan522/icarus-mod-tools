@@ -17,9 +17,16 @@ module Icarus
 
         desc "all", "Run all sync jobs"
         def all
+          puts "Running Proginfo Sync..." if verbose?
           invoke :proginfo
+
+          puts "Running Progs Sync..." if verbose?
           invoke :progs
+
+          puts "Running Modinfo Sync..." if verbose?
           invoke :modinfo
+
+          puts "Running Mods Sync..." if verbose?
           invoke :mods
         end
 
