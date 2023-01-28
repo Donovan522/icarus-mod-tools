@@ -10,9 +10,9 @@ module Icarus
         def initialize(type)
           @array = case type
                    when :modinfo
-                     ModSync.new.info_array
+                     Sync::Mods.new.info_array
                    when :proginfo
-                     ProgSync.new.info_array
+                     Sync::Progs.new.info_array
                    else
                      raise ArgumentError, "Invalid type: #{type}"
                    end

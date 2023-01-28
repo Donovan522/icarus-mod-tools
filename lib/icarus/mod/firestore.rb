@@ -19,12 +19,12 @@ module Icarus
         @repos ||= list(:repositories)
       end
 
-      def modinfo_list
-        @modinfo_list ||= list(:modinfo)
+      def modinfo
+        @modinfo ||= list(:modinfo)
       end
 
-      def proginfo_list
-        @proginfo_list ||= list(:proginfo)
+      def proginfo
+        @proginfo ||= list(:proginfo)
       end
 
       def mods
@@ -72,7 +72,7 @@ module Icarus
 
         case type.to_sym
         when :modinfo, :proginfo
-          update_array = (send("#{type}_list") + [payload]).flatten.uniq
+          update_array = (send(type) + [payload]).flatten.uniq
           response = @client.doc(collections.send(type)).set({ list: update_array }, merge:) if update_array.any?
         when :repositories
           response = @client.doc(collections.repositories).set({ list: payload }, merge:)

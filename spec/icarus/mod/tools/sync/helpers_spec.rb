@@ -1,8 +1,8 @@
-require "tools/sync_helpers"
+require "tools/sync/helpers"
 require "uri"
 require "json"
 
-RSpec.describe Icarus::Mod::Tools::SyncHelpers do
+RSpec.describe Icarus::Mod::Tools::Sync::Helpers do
   subject(:sync_helpers) { Object.new.extend(described_class) }
 
   let(:success_response) { instance_double(Net::HTTPSuccess, code: "200", message: "OK", body: modinfo_json) }
@@ -32,7 +32,8 @@ RSpec.describe Icarus::Mod::Tools::SyncHelpers do
       end
 
       it "raises an error" do
-        expect { sync_helpers.retrieve_from_url(uri) }.to raise_error(Icarus::Mod::Tools::RequestFailed, "HTTP Request failed for #{url} (404): Not Found")
+        expect { sync_helpers.retrieve_from_url(uri) }
+          .to raise_error(Icarus::Mod::Tools::Sync::RequestFailed, "HTTP Request failed for #{url} (404): Not Found")
       end
     end
   end

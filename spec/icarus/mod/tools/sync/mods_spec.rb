@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "firestore"
-require "tools/mod_sync"
+require "tools/sync/mods"
 
-RSpec.describe Icarus::Mod::Tools::ModSync do
+RSpec.describe Icarus::Mod::Tools::Sync::Mods do
   subject(:modsync) { described_class.new }
 
   let(:firestore_double) { instance_double(Icarus::Mod::Firestore) }

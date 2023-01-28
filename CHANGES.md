@@ -4,19 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## History (reverse chronological order)
 
-### v1.6 - 2023-15
+### v1.8 - 2023-01-27
+
+- Added support for `proginfo.json` files
+- Refactored to better utilize caching
+
+### v1.7 - 2023-01-20
+
+- Added `validation` command
+- Added `--dry-run` to `sync` commands
+
+### v1.6 - 2023-01-15
 
 - Added `--check` to `sync mods` to check for updates without downloading
 - Added support for `readmeURL` in `modinfo.json`
 
-### v1.5 - 2023-08
+### v1.5 - 2023-01-08
 
 - Moved source into the DonovanMods Github organization
 - Added `long_description` to `modinfo.json`
 - Added `imageURL` to `modinfo.json`
 - bugfixes
 
-### v1.4 - 2023-03
+### v1.4 - 2023-01-03
 
 **BREAKING CHANGES!**
 
@@ -25,7 +35,7 @@ You'll need to move your ENV variables to a config file. See the README for more
 - Read configuration from `~/.imtconfig.json`
 - bugfixes
 
-### v1.3 - 2023-02
+### v1.3 - 2023-01-02
 
 - First public release
 - Added sorting and filtering to the `list mods` command

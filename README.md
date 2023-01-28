@@ -52,9 +52,17 @@ imt [options] [command]
 ### Commands
 
 ```sh
+Commands:
   imt add             # Adds entries to the databases
+  imt help [COMMAND]  # Describe available commands or one specific command
   imt list            # Lists the databases
   imt sync            # Syncs the databases
+  imt validate        # Validates various entries
+
+Options:
+  -C, [--config=CONFIG]            # Path to the config file
+                                   # Default: /Users/dyoung/.imtconfig.json
+  -V, [--version], [--no-version]  # Print the version and exit
 ```
 
 #### `imt add`
@@ -63,9 +71,13 @@ imt [options] [command]
 Commands:
   imt add help [COMMAND]  # Describe subcommands or one specific subcommand
   imt add modinfo         # Adds an entry to 'meta/modinfo/list'
+  imt add proginfo        # Adds an entry to 'meta/proginfo/list'
   imt add repos           # Adds an entry to 'meta/repos/list'
 
 Options:
+  -C, [--config=CONFIG]            # Path to the config file
+                                   # Default: /Users/dyoung/.imtconfig.json
+  -V, [--version], [--no-version]  # Print the version and exit
   -v, [--verbose], [--no-verbose]  # Increase verbosity. May be repeated for even more verbosity.
                                    # Default: [true]
 ```
@@ -77,9 +89,14 @@ Commands:
   imt list help [COMMAND]  # Describe subcommands or one specific subcommand
   imt list modinfo         # Displays data from 'meta/modinfo/list'
   imt list mods            # Displays data from 'mods'
+  imt list proginfo        # Displays data from 'meta/proginfo/list'
+  imt list progs           # Displays data from 'progs'
   imt list repos           # Displays data from 'meta/repos/list'
 
 Options:
+  -C, [--config=CONFIG]            # Path to the config file
+                                   # Default: /Users/dyoung/.imtconfig.json
+  -V, [--version], [--no-version]  # Print the version and exit
   -v, [--verbose], [--no-verbose]  # Increase verbosity. May be repeated for even more verbosity.
                                    # Default: [true]
 ```
@@ -88,13 +105,20 @@ Options:
 
 ```sh
 Commands:
+  imt sync all             # Run all sync jobs
   imt sync help [COMMAND]  # Describe subcommands or one specific subcommand
   imt sync modinfo         # Reads from 'meta/repos/list' and Syncs any modinfo files we find (github only for now)
   imt sync mods            # Reads from 'meta/modinfo/list' and updates the 'mods' database accordingly
+  imt sync proginfo        # Reads from 'meta/repos/list' and Syncs any proginfo files we find (github only for now)
+  imt sync progs           # Reads from 'meta/proginfo/list' and updates the 'progs' database accordingly
 
 Options:
+  -C, [--config=CONFIG]            # Path to the config file
+                                   # Default: /Users/dyoung/.imtconfig.json
+  -V, [--version], [--no-version]  # Print the version and exit
   -v, [--verbose], [--no-verbose]  # Increase verbosity. May be repeated for even more verbosity.
                                    # Default: [true]
+      [--dry-run], [--no-dry-run]  # Dry run (no changes will be made)
 ```
 
 ## Development

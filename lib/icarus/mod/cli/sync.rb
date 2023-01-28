@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
-require "tools/modinfo_sync"
-require "tools/proginfo_sync"
-require "tools/mod_sync"
-require "tools/prog_sync"
+require "tools/sync/modinfo"
+require "tools/sync/proginfo"
+require "tools/sync/mods"
+require "tools/sync/progs"
 
 module Icarus
   module Mod
     module CLI
       # Sync CLI command definitions
+      # rubocop:disable Style/GlobalVars
       class Sync < SubcommandBase
+        $firestore = nil
+
         class_option :dry_run, type: :boolean, default: false, desc: "Dry run (no changes will be made)"
 
         desc "all", "Run all sync jobs"
@@ -43,8 +46,12 @@ module Icarus
         end
 
         no_commands do
+          def firestore
+            $firestore ||= Firestore.new
+          end
+
           def sync_info(type)
-            sync = (type == :modinfo ? Icarus::Mod::Tools::ModinfoSync : Icarus::Mod::Tools::ProginfoSync).new
+            sync = (type == :modinfo ? Icarus::Mod::Tools::Sync::Modinfo : Icarus::Mod::Tools::Sync::Proginfo).new(client: firestore)
 
             puts "Retrieving repository Data..." if verbose?
             repositories = sync.repositories
@@ -69,7 +76,7 @@ module Icarus
           end
 
           def sync_list(type)
-            sync = (type == :mods ? Icarus::Mod::Tools::ModSync : Icarus::Mod::Tools::ProgSync).new
+            sync = (type == :mods ? Icarus::Mod::Tools::Sync::Mods : Icarus::Mod::Tools::Sync::Progs).new(client: firestore)
 
             puts "Retrieving Info Data..." if verbose?
             info_array = sync.info_array
@@ -128,6 +135,7 @@ module Icarus
           end
         end
       end
+      # rubocop:enable Style/GlobalVars
     end
   end
 end
