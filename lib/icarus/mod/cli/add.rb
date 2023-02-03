@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "firestore"
+require "tools/modinfo"
 
 module Icarus
   module Mod
@@ -29,6 +30,29 @@ module Icarus
           payload = [firestore.list(:repositories), item].flatten.compact
 
           puts firestore.update(:repositories, payload, merge: true) ? "Success" : "Failure"
+        end
+
+        desc "mod", "Adds an entry to 'mods'"
+        method_option :modinfo, type: :string, required: true, default: "modinfo.json", desc: "Path to the modinfo.json file"
+        def mod
+          firestore = Firestore.new
+          data = options[:modinfo]
+
+          if data.nil? || !File.exist?(data)
+            warn "Invalid data file: #{data}"
+            exit 1
+          end
+
+          JSON.parse(File.read(data), symbolize_names: true)[:mods].each do |mod|
+            modinfo = Icarus::Mod::Tools::Modinfo.new(mod)
+
+            unless modinfo.valid?
+              warn "Invalid modinfo: #{modinfo.errors}"
+              exit 1
+            end
+
+            puts firestore.update(:mod, modinfo, merge: true) ? "Success" : "Failure"
+          end
         end
       end
     end

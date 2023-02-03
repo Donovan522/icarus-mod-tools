@@ -85,6 +85,8 @@ module Icarus
           def sync_list(type)
             sync = (type == :mods ? Icarus::Mod::Tools::Sync::Mods : Icarus::Mod::Tools::Sync::Tools).new(client: firestore)
 
+            puts "Syncing #{type} to #{Config.firebase.collections.send(type)}" if verbose > 1
+
             puts "Retrieving Info Data..." if verbose?
             info_array = sync.info_array
 

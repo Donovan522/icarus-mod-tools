@@ -114,7 +114,7 @@ module Icarus
         end
 
         def validate_version
-          @warnings << "Version should be a version string" unless version =~ /\d+\.\d+[.\d+]?/
+          @warnings << "Version should be a version string" unless version =~ /^\d+[.\d+]*/
         end
       end
     end
