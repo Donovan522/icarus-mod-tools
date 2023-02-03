@@ -7,7 +7,7 @@ module Icarus
       class Baseinfo
         attr_reader :data, :id, :created_at, :updated_at
 
-        HASHKEYS = %i[name author version compatibility description fileType fileURL imageURL readmeURL].freeze
+        HASHKEYS = %i[name author version compatibility description files imageURL readmeURL].freeze
 
         def initialize(data, id: nil, created: nil, updated: nil)
           @id = id
@@ -52,13 +52,13 @@ module Icarus
         end
 
         def valid?
-          @warnings << "Version should be a version string" unless validate_version(version)
+          validate_version
+          validate_files if @data.key?(:files)
+          validate_filetype(fileType) if @data.key?(:fileType)
 
           %w[name author description].each do |key|
             @errors << "#{key.capitalize} cannot be blank" unless validate_string(@data[key.to_sym])
           end
-
-          @errors << "Invalid fileType: #{fileType || "blank"}" unless validate_filetype(fileType)
 
           %w[fileURL imageURL readmeURL].each do |key|
             @errors << "Invalid URL #{key.capitalize}: #{@data[key.to_sym] || "blank"}" unless validate_url(@data[key.to_sym])
@@ -67,12 +67,20 @@ module Icarus
           !errors?
         end
 
+        def file_types
+          files&.keys || []
+        end
+
+        def file_urls
+          files&.values || []
+        end
+
         def method_missing(method_name, *_args, &_block)
-          @data[method_name.to_sym]&.strip
+          @data[method_name.to_sym] if @data.keys.include?(method_name.to_sym)
         end
 
         def respond_to_missing?(method_name, include_private = false)
-          HASHKEYS.include?(method_name.to_sym) || super
+          @data.keys.include?(method_name.to_sym) || super
         end
 
         private
@@ -81,22 +89,32 @@ module Icarus
           /(zip|pak|exmodz?)/i
         end
 
+        def validate_string(string)
+          !(string.nil? || string.empty?)
+        end
+
         def validate_url(url)
           return true if url.nil? || url.empty?
 
           url =~ URI::DEFAULT_PARSER.make_regexp
         end
 
-        def validate_filetype(filetype)
-          filetype.match?(filetype_pattern)
+        def validate_files
+          @errors << "files cannot be blank" if @data.key?(:files) && @data[:files].keys.empty?
+
+          file_types.each { |file_type| validate_filetype(file_type) }
+
+          file_urls.each do |file_url|
+            @errors << "Invalid URL: #{file_url}" unless validate_url(file_url)
+          end
         end
 
-        def validate_string(string)
-          !(string.nil? || string.empty?)
+        def validate_filetype(file_type)
+          @errors << "Invalid fileType: #{file_type.upcase}" unless file_type&.match?(filetype_pattern)
         end
 
-        def validate_version(version)
-          version =~ /\d+\.\d+[.\d+]?/
+        def validate_version
+          @warnings << "Version should be a version string" unless version =~ /\d+\.\d+[.\d+]?/
         end
       end
     end

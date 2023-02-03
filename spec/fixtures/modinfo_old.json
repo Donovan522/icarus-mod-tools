@@ -6,11 +6,9 @@
       "version": "1.0",
       "compatibility": "w56",
       "description": "A modinfo description used for testing",
-      "files": {
-        "pak": "https://example.org/TestMod.pak",
-        "exmodz": "https://example.org/TestMod.exmodz",
-        "zip": "https://example.org/TestMod.zip"
-      },
+      "long_description": "A modinfo long description used for testing",
+      "fileType": "pak",
+      "fileURL": "https://example.org/TestMod.pak",
       "imageURL": "https://example.com/test/images/test_image.png",
       "readmeURL": "https://example.com/test/Icarus-Mods/raw/main/README.md"
     }

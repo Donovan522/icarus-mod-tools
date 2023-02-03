@@ -7,6 +7,8 @@ module Icarus
     module Tools
       # Sync methods
       class Toolinfo < Baseinfo
+        HASHKEYS = %i[name author version compatibility description fileType fileURL imageURL readmeURL].freeze
+
         # rubocop:disable Naming/MethodName
         def fileType
           @data[:fileType] || "zip"

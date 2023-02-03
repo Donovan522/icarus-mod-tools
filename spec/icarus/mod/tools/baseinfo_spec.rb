@@ -42,7 +42,7 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
     end
 
     it "returns a valid baseinfo Hash" do
-      expect(baseinfo.to_h.keys).to eq(described_class::HASHKEYS)
+      expect(baseinfo.to_h).to eq(baseinfo_data)
     end
   end
 
@@ -100,7 +100,7 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
     end
 
     context "when fileType is blank" do
-      before { baseinfo.read(baseinfo_data.merge(fileType: "")) }
+      before { baseinfo.read(baseinfo_data.merge(files: {})) }
 
       it "returns false" do
         expect(baseinfo.valid?).to be false
@@ -108,12 +108,12 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
 
       it "adds to @errors" do
         baseinfo.valid?
-        expect(baseinfo.errors).to include("Invalid fileType: ")
+        expect(baseinfo.errors).to eq(["files cannot be blank"])
       end
     end
 
     context "when fileType is invalid" do
-      before { baseinfo.read(baseinfo_data.merge(fileType: "FOO")) }
+      before { baseinfo.read(baseinfo_data.merge(files: { foo: "https://example.org/foo" })) }
 
       it "returns false" do
         expect(baseinfo.valid?).to be false
@@ -171,7 +171,20 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
       end
     end
 
-    %w[fileURL imageURL readmeURL].each do |key|
+    context "when files URLs are invalid" do
+      before { baseinfo.read(baseinfo_data.merge(files: { pak: "invalid" })) }
+
+      it "returns false" do
+        expect(baseinfo.valid?).to be false
+      end
+
+      it "adds to @errors" do
+        baseinfo.valid?
+        expect(baseinfo.errors).to include("Invalid URL: invalid")
+      end
+    end
+
+    %w[imageURL readmeURL].each do |key|
       context "when #{key} URL is invalid" do
         before { baseinfo.read(baseinfo_data.merge(key.to_sym => "invalid")) }
 
