@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## History (reverse chronological order)
 
+## [2.0.2](https://github.com/DonovanMods/icarus-mod-tools/compare/v2.0.1...v2.0.2) (2023-02-04)
+
+
+### Bug Fixes
+
+* Create fileType and fileURL along with files ([a5294a4](https://github.com/DonovanMods/icarus-mod-tools/commit/a5294a479bcc68f6e4125f5062db9a0dbd48bdf8))
+* Create fileType and fileURL along with files ([db5620f](https://github.com/DonovanMods/icarus-mod-tools/commit/db5620fafefd750196d6470f00e4000971adae1f))
+
 ### v2.0 - 2023-02-03
 
 - Converts to new `files` object, replacing fileType and fileURL
