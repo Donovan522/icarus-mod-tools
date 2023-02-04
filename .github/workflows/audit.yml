@@ -1,11 +1,11 @@
-name: Ruby
+name: audit
 
 on:
   push:
     branches:
       - master
-
   pull_request:
+  workflow_call:
 
 jobs:
   build:
