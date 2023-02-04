@@ -33,8 +33,10 @@ Create a file called `.imtconfig.json` in your home directory with the following
     },
     "collections": {
       "modinfo": "meta/modinfo",
+      "toolinfo": "meta/toolinfo",
       "repositories": "meta/repos",
-      "mods": "mods"
+      "mods": "mods",
+      "tools": "tools"
     }
   },
   "github": {
@@ -73,6 +75,7 @@ Commands:
   imt add modinfo         # Adds an entry to 'meta/modinfo/list'
   imt add toolinfo        # Adds an entry to 'meta/toolinfo/list'
   imt add repos           # Adds an entry to 'meta/repos/list'
+  imt add mod <filename>  # Adds an entry to 'mods' when given a modinfo.json file
 
 Options:
   -C, [--config=CONFIG]            # Path to the config file

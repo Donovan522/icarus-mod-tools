@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## History (reverse chronological order)
 
+### v2.0 - 2023-02-03
+
+- Converts to new `files` object, replacing fileType and fileURL
+
 ### v1.9 - 2023-01-28
 
 - Renamed `Progs` to `Tools`
