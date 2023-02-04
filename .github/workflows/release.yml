@@ -6,18 +6,15 @@ on:
       - main
 
 jobs:
-  audit:
-    uses: ./.github/workflows/audit.yml
   release-please:
     runs-on: ubuntu-latest
-    needs: [audit]
     steps:
       - uses: google-github-actions/release-please-action@v3
         id: release
         with:
+          token: ${{secrets.GH_API_TOKEN}}
           release-type: ruby
           package-name: Icarus-Mod-Tools
-          bump-minor-pre-major: true
           skip-github-release: true
           version-file: "lib/icarus/mod/version.rb"
       # Checkout code if release was created
