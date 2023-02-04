@@ -9,6 +9,7 @@ module Icarus
       class Modinfo < Baseinfo
         HASHKEYS = %i[name author version compatibility description long_description files fileType fileURL imageURL readmeURL].freeze
 
+        # rubocop:disable Metrics/AbcSize
         def to_h
           db_hash = HASHKEYS.each_with_object({}) do |key, hash|
             # next if %i[fileType fileURL].include?(key.to_sym)
@@ -25,6 +26,7 @@ module Icarus
 
           db_hash
         end
+        # rubocop:enable Metrics/AbcSize
 
         def file_types
           files&.keys || [@data[:fileType] || "pak"]
