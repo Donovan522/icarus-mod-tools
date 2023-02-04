@@ -16,7 +16,7 @@ RSpec.describe Icarus::Mod::Tools::Sync::ModinfoList do
   let(:modinfo_array) { [modinfo] }
 
   before do
-    allow(firestore_double).to receive(:repos).and_return([url])
+    allow(firestore_double).to receive(:repositories).and_return([url])
     allow(firestore_double).to receive(:update).and_return(true)
     allow(Icarus::Mod::Firestore).to receive(:new).and_return(firestore_double)
 
@@ -30,10 +30,10 @@ RSpec.describe Icarus::Mod::Tools::Sync::ModinfoList do
   end
 
   describe "#repositories" do
-    it "calls Firestore.repos" do
+    it "calls Firestore.repositories" do
       modinfo_sync.repositories
 
-      expect(firestore_double).to have_received(:repos)
+      expect(firestore_double).to have_received(:repositories)
     end
   end
 

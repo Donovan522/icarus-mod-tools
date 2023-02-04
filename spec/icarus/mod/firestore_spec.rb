@@ -4,8 +4,16 @@ RSpec.describe Icarus::Mod::Firestore do
   context "when initialized" do
     subject { described_class.new }
 
+    let(:client_double) { instance_double(Google::Cloud::Firestore::Client) }
+    let(:collection_double) { instance_double(Google::Cloud::Firestore::CollectionReference) }
+    let(:document_double) { instance_double(Google::Cloud::Firestore::DocumentReference) }
+
     before do
-      allow(Google::Cloud::Firestore).to receive(:new).and_return(instance_double(Google::Cloud::Firestore::Client))
+      allow(collection_double).to receive(:get).and_return([])
+      allow(document_double).to receive(:get).and_return(Struct.new(:list))
+      allow(client_double).to receive(:doc).and_return(document_double)
+      allow(client_double).to receive(:col).and_return(collection_double)
+      allow(Google::Cloud::Firestore).to receive(:new).and_return(client_double)
       allow(Icarus::Mod::Config).to receive(:firebase).and_return(
         OpenStruct.new(
           credentials: OpenStruct.new(to_h: {}),
@@ -16,7 +24,9 @@ RSpec.describe Icarus::Mod::Firestore do
 
     it { is_expected.to be_a(described_class) }
     it { is_expected.to respond_to(:client) }
-    it { is_expected.to respond_to(:repos) }
+    it { is_expected.to respond_to(:repositories) }
+    it { is_expected.to respond_to(:modinfo) }
+    it { is_expected.to respond_to(:toolinfo) }
     it { is_expected.to respond_to(:mods) }
     it { is_expected.to respond_to(:tools) }
   end

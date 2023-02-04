@@ -13,10 +13,15 @@ module Icarus
       def initialize
         @client = Google::Cloud::Firestore.new(credentials: Config.firebase.credentials.to_h)
         @collections = Config.firebase.collections
+        @repositories = repositories
+        @modinfo = modinfo
+        @toolinfo = toolinfo
+        @mods = mods
+        @tools = tools
       end
 
-      def repos
-        @repos ||= list(:repositories)
+      def repositories
+        @repositories ||= list(:repositories)
       end
 
       def modinfo
@@ -36,35 +41,7 @@ module Icarus
       end
 
       def find_by_type(type:, name:, author:)
-        list(type).find { |obj| obj.name == name && obj.author == author }
-      end
-
-      def get_list(type)
-        raise "Invalid type: #{type} - unknown collection" unless collections.respond_to?(type)
-
-        @client.doc(collections.send(type)).get[:list]
-      end
-
-      def list(type)
-        case type.to_sym
-        when :modinfo, :toolinfo, :repositories
-          get_list(type)
-        when :mods, :tools
-          @client.col(collections.send(type)).get.map do |doc|
-            klass = type == :mods ? Icarus::Mod::Tools::Modinfo : Icarus::Mod::Tools::Toolinfo
-            klass.new(doc.data, id: doc.document_id, created: doc.create_time, updated: doc.update_time)
-          end
-        else
-          raise "Invalid type: #{type}"
-        end
-      end
-
-      def update_or_create(type, payload, merge:)
-        doc_id = payload.id || find_by_type(type:, name: payload.name, author: payload.author)&.id
-
-        return @client.doc("#{collections.send(type)}/#{doc_id}").set(payload.to_h, merge:) if doc_id
-
-        @client.col(collections.send(type)).add(payload.to_h)
+        instance_variable_get("@#{type}").find { |obj| obj.name == name && obj.author == author }
       end
 
       def update(type, payload, merge: false)
@@ -97,6 +74,28 @@ module Icarus
       end
 
       private
+
+      def list(type)
+        case type.to_sym
+        when :modinfo, :toolinfo, :repositories
+          @client.doc(collections.send(type)).get[:list]
+        when :mods, :tools
+          @client.col(collections.send(type)).get.map do |doc|
+            klass = type == :mods ? Icarus::Mod::Tools::Modinfo : Icarus::Mod::Tools::Toolinfo
+            klass.new(doc.data, id: doc.document_id, created: doc.create_time, updated: doc.update_time)
+          end
+        else
+          raise "Invalid type: #{type}"
+        end
+      end
+
+      def update_or_create(type, payload, merge:)
+        doc_id = payload.id || find_by_type(type:, name: payload.name, author: payload.author)&.id
+
+        return @client.doc("#{collections.send(type)}/#{doc_id}").set(payload.to_h, merge:) if doc_id
+
+        @client.col(collections.send(type)).add(payload.to_h)
+      end
 
       def pluralize(type)
         type.to_s.end_with?("s") ? type.to_s : "#{type}s"

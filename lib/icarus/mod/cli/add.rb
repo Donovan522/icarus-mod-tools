@@ -11,7 +11,7 @@ module Icarus
         desc "modinfo", "Adds an entry to 'meta/modinfo/list'"
         def modinfo(item)
           firestore = Firestore.new
-          payload = [firestore.list(:modinfo), item].flatten.compact
+          payload = [firestore.modinfo, item].flatten.compact
 
           puts firestore.update(:modinfo, payload, merge: true) ? "Success" : "Failure"
         end
@@ -19,7 +19,7 @@ module Icarus
         desc "toolinfo", "Adds an entry to 'meta/toolinfo/list'"
         def toolinfo(item)
           firestore = Firestore.new
-          payload = [firestore.list(:toolinfo), item].flatten.compact
+          payload = [firestore.toolinfo, item].flatten.compact
 
           puts firestore.update(:toolinfo, payload, merge: true) ? "Success" : "Failure"
         end
@@ -27,7 +27,7 @@ module Icarus
         desc "repos", "Adds an entry to 'meta/repos/list'"
         def repos(item)
           firestore = Firestore.new
-          payload = [firestore.list(:repositories), item].flatten.compact
+          payload = [firestore.repositories, item].flatten.compact
 
           puts firestore.update(:repositories, payload, merge: true) ? "Success" : "Failure"
         end

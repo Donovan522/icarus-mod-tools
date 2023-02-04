@@ -19,7 +19,7 @@ module Icarus
           end
 
           def repositories
-            @firestore.repos
+            @firestore.repositories
           end
 
           def update(modinfo_array)

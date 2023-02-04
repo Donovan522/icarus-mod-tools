@@ -10,21 +10,21 @@ module Icarus
       class List < SubcommandBase
         desc "modinfo", "Displays data from 'meta/modinfo/list'"
         def modinfo
-          modinfo_array = Firestore.new.list(:modinfo)
+          modinfo_array = Firestore.new.send(:modinfo)
           puts modinfo_array
           puts "Total: #{modinfo_array.count}" if verbose > 1
         end
 
         desc "toolinfo", "Displays data from 'meta/toolinfo/list'"
         def toolinfo
-          toolinfo_array = Firestore.new.list(:toolinfo)
+          toolinfo_array = Firestore.new.send(:toolinfo)
           puts toolinfo_array
           puts "Total: #{toolinfo_array.count}" if verbose > 1
         end
 
         desc "repos", "Displays data from 'meta/repos/list'"
         def repos
-          repos = Firestore.new.list(:repositories)
+          repos = Firestore.new.send(:repositories)
           puts repos
           puts "Total: #{repos.count}" if verbose > 1
         end
@@ -64,7 +64,7 @@ module Icarus
             puts "Sorted by #{sort_field}" if sort_field && verbose > 2
             puts "Filtered by #{filter_field} = #{filter_value}" if filter_field && verbose > 2
 
-            items = Firestore.new.list(type)
+            items = Firestore.new.send(type)
 
             # Filter by field
             items.select! { |item| item.send(filter_field).downcase =~ /#{filter_value&.downcase}/ } if filter_field
