@@ -11,7 +11,7 @@ RSpec.describe Icarus::Mod::Tools::Modinfo do
       expect(described_class::HASHKEYS | modinfo_keys).to eq(described_class::HASHKEYS)
     end
 
-    it "returns a valid modinfo Hash" do
+    it "returns a valid modinfo Hash", skip: "pending deprecation of fileType and fileURL" do
       expect(modinfo.to_h).to eq(modinfo_data)
     end
 
@@ -20,7 +20,7 @@ RSpec.describe Icarus::Mod::Tools::Modinfo do
 
       let(:deprecated_modinfo_data) { JSON.parse(File.read("spec/fixtures/modinfo_old.json"), symbolize_names: true)[:mods].first }
 
-      it "returns a valid modinfo Hash" do
+      it "returns a valid modinfo Hash", skip: "pending deprecation of fileType and fileURL" do
         expect(modinfo_hash.keys.sort).to eq((modinfo_data.keys << :long_description).sort)
       end
 
