@@ -15,10 +15,6 @@ module Icarus
         end
         # rubocop:enable Naming/MethodName
 
-        def to_h
-          HASHKEYS.each_with_object({}) { |key, hash| hash[key] = @data[key] }
-        end
-
         private
 
         def filetype_pattern

@@ -17,7 +17,14 @@ RSpec.describe Icarus::Mod::Firestore do
       allow(Icarus::Mod::Config).to receive(:firebase).and_return(
         OpenStruct.new(
           credentials: OpenStruct.new(to_h: {}),
-          collections: OpenStruct.new(modinfo: "test-modinfo", repositories: "test-repositories", mods: "test-mods")
+          collections: OpenStruct.new(
+            meta: OpenStruct.new(
+              modinfo: "test-modinfo",
+              toolinfo: "test-toolinfo",
+              repositories: "test-repositories"
+            ),
+            mods: "test-mods"
+          )
         )
       )
     end

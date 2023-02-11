@@ -13,9 +13,12 @@
       "client_x509_cert_url": "YOUR-x509-CERT-URL"
     },
     "collections": {
-      "modinfo": "meta/modinfo",
-      "toolinfo": "meta/toolinfo",
-      "repositories": "meta/repos",
+      "meta": {
+        "modinfo": "meta/modinfo",
+        "repositories": "meta/repos",
+        "status": "meta/status",
+        "toolinfo": "meta/toolinfo"
+      },
       "mods": "mods",
       "tools": "tools"
     }

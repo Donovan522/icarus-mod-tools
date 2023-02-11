@@ -29,7 +29,7 @@ module Icarus
             validator.array.each do |info|
               print Paint[format("%s %-#{max_length}s", "Running validation steps on", info.uniq_name), :cyan, :bright] if verbose > 1
 
-              info.valid?
+              info.validate
 
               unless info.errors? || info.warnings?
                 puts Paint["SUCCESS", :green, :bright] if verbose > 1

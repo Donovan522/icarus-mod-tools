@@ -26,6 +26,14 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
     end
   end
 
+  describe "#author_id" do
+    before { baseinfo_data.merge!(author: "Foo Bar") }
+
+    it "returns a parameterized author String" do
+      expect(baseinfo.author_id).to eq("foo_bar")
+    end
+  end
+
   describe "#to_json" do
     it "returns a JSON String" do
       expect(baseinfo.to_json).to be_a(String)
@@ -82,7 +90,19 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
     end
   end
 
+  describe "#validate" do
+    it "sets @validated true" do
+      expect { baseinfo.validate }.to change { baseinfo.instance_variable_get("@validated") }.from(false).to(true)
+    end
+  end
+
   describe "#valid?" do
+    it "calls #validate" do
+      baseinfo.valid?
+
+      expect(baseinfo.instance_variable_get("@validated")).to be(true)
+    end
+
     context "when given valid Baseinfo data" do
       it "returns true" do
         expect(baseinfo.valid?).to be true
@@ -100,7 +120,7 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
     end
 
     context "when fileType is blank" do
-      before { baseinfo.read(baseinfo_data.merge(files: {})) }
+      before { baseinfo_data.merge!(files: {}) }
 
       it "returns false" do
         expect(baseinfo.valid?).to be false
@@ -113,7 +133,7 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
     end
 
     context "when fileType is invalid" do
-      before { baseinfo.read(baseinfo_data.merge(files: { foo: "https://example.org/foo" })) }
+      before { baseinfo_data.merge!(files: { foo: "https://example.org/foo" }) }
 
       it "returns false" do
         expect(baseinfo.valid?).to be false
@@ -126,7 +146,7 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
     end
 
     context "when version is blank" do
-      before { baseinfo.read(baseinfo_data.merge(version: "")) }
+      before { baseinfo_data.merge!(version: "") }
 
       it "returns true" do
         expect(baseinfo.valid?).to be true
@@ -144,7 +164,7 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
     end
 
     context "when version is invalid" do
-      before { baseinfo.read(baseinfo_data.merge(version: "FOO")) }
+      before { baseinfo_data.merge!(version: "FOO") }
 
       it "returns false" do
         expect(baseinfo.valid?).to be true
@@ -158,7 +178,7 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
 
     %w[name author description].each do |key|
       context "when #{key} is blank" do
-        before { baseinfo.read(baseinfo_data.merge(key.to_sym => "")) }
+        before { baseinfo_data.merge!(key.to_sym => "") }
 
         it "returns false" do
           expect(baseinfo.valid?).to be false
@@ -172,7 +192,7 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
     end
 
     context "when files URLs are invalid" do
-      before { baseinfo.read(baseinfo_data.merge(files: { pak: "invalid" })) }
+      before { baseinfo_data.merge!(files: { pak: "invalid" }) }
 
       it "returns false" do
         expect(baseinfo.valid?).to be false
@@ -186,7 +206,7 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
 
     %w[imageURL readmeURL].each do |key|
       context "when #{key} URL is invalid" do
-        before { baseinfo.read(baseinfo_data.merge(key.to_sym => "invalid")) }
+        before { baseinfo_data.merge!(key.to_sym => "invalid") }
 
         it "returns false" do
           expect(baseinfo.valid?).to be false
@@ -196,6 +216,33 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
           baseinfo.valid?
           expect(baseinfo.errors).to include("Invalid URL #{key.capitalize}: invalid")
         end
+      end
+    end
+  end
+
+  describe "#status" do
+    before do
+      baseinfo.instance_variable_set("@errors", ["test error"])
+      baseinfo.instance_variable_set("@warnings", ["test warning"])
+    end
+
+    it "has a warnings key" do
+      expect(baseinfo.status).to have_key(:warnings)
+    end
+
+    it "has an errors key" do
+      expect(baseinfo.status).to have_key(:errors)
+    end
+
+    context "when warnings exist" do
+      it "returns warnings" do
+        expect(baseinfo.status[:warnings]).to eq(["test warning"])
+      end
+    end
+
+    context "when errors exit" do
+      it "returns warnings" do
+        expect(baseinfo.status[:errors]).to eq(["test error"])
       end
     end
   end

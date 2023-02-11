@@ -15,8 +15,13 @@ module Icarus
           @updated_at = updated
           @errors = []
           @warnings = []
+          @validated = false
 
           read(data)
+        end
+
+        def author_id
+          author.downcase.gsub(/\s+/, "_")
         end
 
         def read(data)
@@ -24,19 +29,30 @@ module Icarus
         end
 
         def errors
+          validate
           @errors.compact.uniq
         end
 
         def errors?
-          @errors.compact.any?
+          errors.any?
         end
 
         def warnings
+          validate
           @warnings.compact.uniq
         end
 
         def warnings?
-          @warnings.compact.any?
+          warnings.any?
+        end
+
+        def status
+          validate
+
+          {
+            errors:,
+            warnings:
+          }
         end
 
         def uniq_name
@@ -48,10 +64,16 @@ module Icarus
         end
 
         def to_h
-          HASHKEYS.each_with_object({}) { |key, hash| hash[key] = @data[key] }
+          db_hash = HASHKEYS.each_with_object({}) { |key, hash| hash[key] = @data[key] }
+
+          db_hash[:version] = "1.0" if version.nil?
+
+          db_hash
         end
 
-        def valid?
+        def validate
+          return true if @validated
+
           validate_version
           validate_files if @data.key?(:files)
           validate_filetype(fileType) if @data.key?(:fileType)
@@ -63,6 +85,12 @@ module Icarus
           %w[fileURL imageURL readmeURL].each do |key|
             @errors << "Invalid URL #{key.capitalize}: #{@data[key.to_sym] || "blank"}" unless validate_url(@data[key.to_sym])
           end
+
+          @validated = true
+        end
+
+        def valid?
+          validate
 
           !errors?
         end
@@ -100,6 +128,7 @@ module Icarus
         end
 
         def validate_files
+          @errors << "This mod uses deprecated fields (fileType and fileURL)" if @data.key?(:file_type) || @data.key?(:file_url)
           @errors << "files cannot be blank" if @data.key?(:files) && @data[:files].keys.empty?
 
           file_types.each { |file_type| validate_filetype(file_type) }
@@ -114,7 +143,11 @@ module Icarus
         end
 
         def validate_version
-          @warnings << "Version should be a version string" unless version =~ /^\d+[.\d+]*/
+          if version.nil?
+            @warnings << "Version was nil, it has been defaulted to 1.0"
+          else
+            @warnings << "Version should be a version string" unless version =~ /^\d+[.\d+]*/
+          end
         end
       end
     end

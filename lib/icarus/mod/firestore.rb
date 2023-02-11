@@ -47,17 +47,17 @@ module Icarus
       def update(type, payload, merge: false)
         raise "You must specify a payload to update" if payload&.empty? || payload.nil?
 
-        case type.to_sym
-        when :modinfo, :toolinfo
-          update_array = (send(type) + [payload]).flatten.uniq
-          response = @client.doc(collections.send(type)).set({ list: update_array }, merge:) if update_array.any?
-        when :repositories
-          response = @client.doc(collections.repositories).set({ list: payload }, merge:)
-        when :mod, :tool
-          response = update_or_create(pluralize(type), payload, merge:)
-        else
-          raise "Invalid type: #{type}"
-        end
+        response = case type.to_sym
+                   when :modinfo, :toolinfo
+                     update_array = (send(type) + [payload]).flatten.uniq
+                     @client.doc(collections.meta.send(type)).set({ list: update_array }, merge:) if update_array.any?
+                   when :repositories
+                     @client.doc(collections.meta.repositories).set({ list: payload }, merge:)
+                   when :mod, :tool
+                     create_or_update(pluralize(type), payload, merge:)
+                   else
+                     raise "Invalid type: #{type}"
+                   end
 
         response.is_a?(Google::Cloud::Firestore::DocumentReference) || response.is_a?(Google::Cloud::Firestore::CommitResponse::WriteResult)
       end
@@ -78,7 +78,7 @@ module Icarus
       def list(type)
         case type.to_sym
         when :modinfo, :toolinfo, :repositories
-          @client.doc(collections.send(type)).get[:list]
+          @client.doc(collections.meta.send(type)).get[:list]
         when :mods, :tools
           @client.col(collections.send(type)).get.map do |doc|
             klass = type == :mods ? Icarus::Mod::Tools::Modinfo : Icarus::Mod::Tools::Toolinfo
@@ -89,7 +89,7 @@ module Icarus
         end
       end
 
-      def update_or_create(type, payload, merge:)
+      def create_or_update(type, payload, merge:)
         doc_id = payload.id || find_by_type(type:, name: payload.name, author: payload.author)&.id
 
         return @client.doc("#{collections.send(type)}/#{doc_id}").set(payload.to_h, merge:) if doc_id

@@ -5,32 +5,15 @@ RSpec.describe Icarus::Mod::Tools::Modinfo do
 
   let(:modinfo_data) { JSON.parse(File.read("spec/fixtures/modinfo.json"), symbolize_names: true)[:mods].first }
   let(:modinfo_keys) { modinfo_data.keys }
+  let(:meta) { { status: { errors: [], warnings: [] } } }
 
   describe "#to_h" do
     it "returns a valid baseinfo Hash" do
       expect(described_class::HASHKEYS | modinfo_keys).to eq(described_class::HASHKEYS)
     end
 
-    it "returns a valid modinfo Hash", skip: "pending deprecation of fileType and fileURL" do
-      expect(modinfo.to_h).to eq(modinfo_data)
-    end
-
-    context "when using the old format" do
-      subject(:modinfo_hash) { described_class.new(deprecated_modinfo_data).to_h }
-
-      let(:deprecated_modinfo_data) { JSON.parse(File.read("spec/fixtures/modinfo_old.json"), symbolize_names: true)[:mods].first }
-
-      it "returns a valid modinfo Hash", skip: "pending deprecation of fileType and fileURL" do
-        expect(modinfo_hash.keys.sort).to eq((modinfo_data.keys << :long_description).sort)
-      end
-
-      it "creates a files object" do
-        expect(modinfo_hash).to have_key(:files)
-      end
-
-      it "converts fileType and fileURL to files" do
-        expect(modinfo_hash[:files]).to eq({ deprecated_modinfo_data[:fileType].downcase.to_sym => deprecated_modinfo_data[:fileURL] })
-      end
+    it "returns a valid modinfo Hash" do
+      expect(modinfo.to_h).to eq(modinfo_data.merge(meta:))
     end
   end
 

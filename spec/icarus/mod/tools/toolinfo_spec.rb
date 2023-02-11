@@ -26,6 +26,20 @@ RSpec.describe Icarus::Mod::Tools::Toolinfo do
     end
   end
 
+  describe "#fileURL" do
+    it "exists" do
+      expect(toolinfo).to respond_to(:fileURL)
+    end
+
+    it "returns a String" do
+      expect(toolinfo.fileURL).to be_a(String)
+    end
+
+    it "returns correct info" do
+      expect(toolinfo.fileURL).to eq(toolinfo_data[:fileURL])
+    end
+  end
+
   describe "#valid?" do
     %w[ZIP EXE].each do |filetype|
       context "when fileType is '#{filetype}'" do
