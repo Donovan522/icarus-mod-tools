@@ -7,8 +7,8 @@ RSpec.describe Icarus::Mod::Tools::Toolinfo do
   let(:toolinfo_keys) { toolinfo_data.keys }
 
   describe "#to_h" do
-    it "returns a valid baseinfo Hash" do
-      expect(described_class::HASHKEYS).to eq(toolinfo_keys)
+    it "returns a valid toolinfo Hash" do
+      expect(toolinfo.to_h.keys).to eq(described_class::HASHKEYS)
     end
   end
 
