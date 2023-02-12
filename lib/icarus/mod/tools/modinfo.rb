@@ -14,19 +14,13 @@ module Icarus
           db_hash
         end
 
-        def file_types
-          files&.keys || [@data[:fileType] || "pak"]
-        end
+        def validate
+          return true if @validated
 
-        def file_urls
-          files&.values || [@data[:fileURL]].compact
-        end
+          validate_files
 
-        # rubocop:disable Naming/MethodName
-        def fileType
-          @data[:fileType] || "pak"
+          super
         end
-        # rubocop:enable Naming/MethodName
       end
     end
   end

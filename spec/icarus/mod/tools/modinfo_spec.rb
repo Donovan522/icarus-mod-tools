@@ -17,25 +17,7 @@ RSpec.describe Icarus::Mod::Tools::Modinfo do
     end
   end
 
-  describe "#fileType" do
-    context "when fileType is not set" do
-      before { modinfo_data.delete(:fileType) }
-
-      it "returns a default fileType" do
-        expect(modinfo.fileType).to eq("pak")
-      end
-    end
-  end
-
   describe "#file_types" do
-    context "when files is not set" do
-      before { modinfo_data.delete(:files) }
-
-      it "returns a default fileType" do
-        expect(modinfo.file_types).to eq(["pak"])
-      end
-    end
-
     context "when files is set" do
       it "returns all file_types" do
         expect(modinfo.file_types).to eq(%i[pak exmodz zip])
@@ -49,6 +31,45 @@ RSpec.describe Icarus::Mod::Tools::Modinfo do
         before { modinfo_data[:fileType] = filetype }
 
         it { is_expected.to be_valid }
+      end
+    end
+
+    context "when file_type is invalid" do
+      before { modinfo_data.merge!(files: { foo: "https://example.org/foo" }) }
+
+      it "returns false" do
+        expect(modinfo.valid?).to be false
+      end
+
+      it "adds to @errors" do
+        modinfo.valid?
+        expect(modinfo.errors).to include("Invalid fileType: FOO")
+      end
+    end
+
+    context "when fileType is blank" do
+      before { modinfo_data.merge!(files: {}) }
+
+      it "returns false" do
+        expect(modinfo.valid?).to be true
+      end
+
+      it "adds to @errors" do
+        modinfo.valid?
+        expect(modinfo.warnings).to eq(["files should not be empty"])
+      end
+    end
+
+    context "when files URLs are invalid" do
+      before { modinfo_data.merge!(files: { pak: "invalid" }) }
+
+      it "returns false" do
+        expect(modinfo.valid?).to be false
+      end
+
+      it "adds to @errors" do
+        modinfo.valid?
+        expect(modinfo.errors).to include("Invalid URL: invalid")
       end
     end
   end

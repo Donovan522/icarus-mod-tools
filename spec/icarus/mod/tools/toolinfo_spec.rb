@@ -48,5 +48,31 @@ RSpec.describe Icarus::Mod::Tools::Toolinfo do
         it { is_expected.to be_valid }
       end
     end
+
+    context "when fileType is invalid" do
+      before { toolinfo_data.merge!(fileType: :foo) }
+
+      it "returns false" do
+        expect(toolinfo.valid?).to be false
+      end
+
+      it "adds to @errors" do
+        toolinfo.valid?
+        expect(toolinfo.errors).to include("Invalid fileType: FOO")
+      end
+    end
+
+    context "when filesURL is invalid" do
+      before { toolinfo_data.merge!(fileURL: "invalid") }
+
+      it "returns false" do
+        expect(toolinfo.valid?).to be false
+      end
+
+      it "adds to @errors" do
+        toolinfo.valid?
+        expect(toolinfo.errors).to include("Invalid fileURL: invalid")
+      end
+    end
   end
 end

@@ -119,32 +119,6 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
       end
     end
 
-    context "when fileType is blank" do
-      before { baseinfo_data.merge!(files: {}) }
-
-      it "returns false" do
-        expect(baseinfo.valid?).to be false
-      end
-
-      it "adds to @errors" do
-        baseinfo.valid?
-        expect(baseinfo.errors).to eq(["files cannot be blank"])
-      end
-    end
-
-    context "when fileType is invalid" do
-      before { baseinfo_data.merge!(files: { foo: "https://example.org/foo" }) }
-
-      it "returns false" do
-        expect(baseinfo.valid?).to be false
-      end
-
-      it "adds to @errors" do
-        baseinfo.valid?
-        expect(baseinfo.errors).to include("Invalid fileType: FOO")
-      end
-    end
-
     context "when version is blank" do
       before { baseinfo_data.merge!(version: "") }
 
@@ -188,19 +162,6 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
           baseinfo.valid?
           expect(baseinfo.errors).to include("#{key.capitalize} cannot be blank")
         end
-      end
-    end
-
-    context "when files URLs are invalid" do
-      before { baseinfo_data.merge!(files: { pak: "invalid" }) }
-
-      it "returns false" do
-        expect(baseinfo.valid?).to be false
-      end
-
-      it "adds to @errors" do
-        baseinfo.valid?
-        expect(baseinfo.errors).to include("Invalid URL: invalid")
       end
     end
 

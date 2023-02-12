@@ -24,6 +24,15 @@ module Icarus
         def filetype_pattern
           /(zip|exe)/i
         end
+
+        def validate
+          return true if @validated
+
+          validate_filetype(fileType)
+          @errors << "Invalid fileURL: #{@data[:fileURL] || "blank"}" unless validate_url(fileURL)
+
+          super
+        end
       end
     end
   end

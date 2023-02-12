@@ -75,14 +75,12 @@ module Icarus
           return true if @validated
 
           validate_version
-          validate_files if @data.key?(:files)
-          validate_filetype(fileType) if @data.key?(:fileType)
 
           %w[name author description].each do |key|
             @errors << "#{key.capitalize} cannot be blank" unless validate_string(@data[key.to_sym])
           end
 
-          %w[fileURL imageURL readmeURL].each do |key|
+          %w[imageURL readmeURL].each do |key|
             @errors << "Invalid URL #{key.capitalize}: #{@data[key.to_sym] || "blank"}" unless validate_url(@data[key.to_sym])
           end
 
@@ -128,8 +126,8 @@ module Icarus
         end
 
         def validate_files
-          @errors << "This mod uses deprecated fields (fileType and fileURL)" if @data.key?(:file_type) || @data.key?(:file_url)
-          @errors << "files cannot be blank" if @data.key?(:files) && @data[:files].keys.empty?
+          @warnings << "This mod uses deprecated fields (fileType and fileURL)" if @data.key?(:fileType) || @data.key?(:fileURL)
+          @warnings << "files should not be empty" if file_types.empty?
 
           file_types.each { |file_type| validate_filetype(file_type) }
 
