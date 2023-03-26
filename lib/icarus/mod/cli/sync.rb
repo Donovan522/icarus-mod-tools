@@ -57,8 +57,12 @@ module Icarus
             $firestore ||= Firestore.new
           end
 
+          def success_or_failure(status)
+            format("%<status>10s", status: status ? Paint["Success", :green] : Paint["Failure", :red])
+          end
+
           def sync_info(type)
-            sync = (type == :modinfo ? Icarus::Mod::Tools::Sync::ModinfoList : Icarus::Mod::Tools::Sync::ToolinfoList).new(client: firestore)
+            sync = ((type == :modinfo) ? Icarus::Mod::Tools::Sync::ModinfoList : Icarus::Mod::Tools::Sync::ToolinfoList).new(client: firestore)
 
             puts "Retrieving repository Data..." if verbose?
             repositories = sync.repositories
@@ -71,19 +75,19 @@ module Icarus
             raise Icarus::Mod::Tools::Error, "no .json files found for #{type}" unless info_array&.any?
 
             if options[:dry_run]
-              puts "Dry run; no changes will be made"
+              puts Paint["Dry run; no changes will be made", :orange, :bright]
               return
             end
 
-            puts "Saving to Firestore..." if verbose?
+            puts Paint["Saving to Firestore...", :black] if verbose?
             response = sync.update(info_array)
-            puts response ? "Success" : "Failure (may be no changes)" if verbose?
+            puts response ? Paint["Success", :green, :bright] : Paint["Failure (may be no changes)", :red, :bright] if verbose?
           rescue Icarus::Mod::Tools::Error => e
             warn e.message
           end
 
           def sync_list(type)
-            sync = (type == :mods ? Icarus::Mod::Tools::Sync::Mods : Icarus::Mod::Tools::Sync::Tools).new(client: firestore)
+            sync = ((type == :mods) ? Icarus::Mod::Tools::Sync::Mods : Icarus::Mod::Tools::Sync::Tools).new(client: firestore)
 
             puts "Syncing #{type} to #{Config.firebase.collections.send(type)}" if verbose > 1
 
@@ -100,11 +104,18 @@ module Icarus
               verb = "Creating"
 
               puts "Validating Info Data for #{list.uniq_name}..." if verbose > 2
-              warn "Skipping List #{list.uniq_name} due to validation errors" && next unless list.valid?
+              unless list.valid?
+                warn Paint["Skipping List #{list.uniq_name} due to validation errors", :yellow, :bright]
+                if verbose > 1
+                  warn list.errors.map { |error| Paint[error, :red] }.join("\n")
+                end
+
+                next
+              end
 
               doc_id = sync.find(list)
               if doc_id
-                puts "Found existing list #{list.name} at #{doc_id}" if verbose > 2
+                puts Paint["Found existing list #{list.name} at #{doc_id}", :black] if verbose > 2
                 list.id = doc_id
                 verb = "Updating"
               end
@@ -112,16 +123,16 @@ module Icarus
               print format("#{verb} %-<name>60s", name: "'#{list.author || "NoOne"}/#{list.name || "Unnamed"}'") if verbose > 1
 
               if options[:dry_run]
-                puts "Dry run; no changes will be made" if verbose > 1
+                puts Paint["Dry run; no changes will be made", :yellow] if verbose > 1
                 next
               end
 
               response = sync.update(list)
-              puts format("%<status>10s", status: response ? "Success" : "Failure") if verbose > 1
+              puts success_or_failure(status: response) if verbose > 1
             end
 
             if options[:dry_run]
-              puts "Dry run; no changes will be made" if verbose?
+              puts Paint["Dry run; no changes will be made", :white] if verbose?
               return
             end
 
@@ -135,7 +146,7 @@ module Icarus
             delete_array.each do |list|
               print format("Deleting %-<name>60s", name: "'#{list.author || "NoOne"}/#{list.name || "Unnamed'"}") if verbose > 1
               response = sync.delete(list)
-              puts format("%<status>10s", status: response ? "Success" : "Failure") if verbose > 1
+              puts success_or_failure(status: response) if verbose > 1
             end
 
             puts "Deleted #{delete_array.count} outdated items" if verbose?
