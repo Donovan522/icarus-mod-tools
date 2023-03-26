@@ -5,7 +5,7 @@ RSpec.describe Icarus::Mod::Tools::Modinfo do
 
   let(:modinfo_data) { JSON.parse(File.read("spec/fixtures/modinfo.json"), symbolize_names: true)[:mods].first }
   let(:modinfo_keys) { modinfo_data.keys }
-  let(:meta) { { status: { errors: [], warnings: [] } } }
+  let(:meta) { {status: {errors: [], warnings: []}} }
 
   describe "#to_h" do
     it "returns a valid baseinfo Hash" do
@@ -35,7 +35,7 @@ RSpec.describe Icarus::Mod::Tools::Modinfo do
     end
 
     context "when file_type is invalid" do
-      before { modinfo_data.merge!(files: { foo: "https://example.org/foo" }) }
+      before { modinfo_data.merge!(files: {foo: "https://example.org/foo"}) }
 
       it "returns false" do
         expect(modinfo.valid?).to be false
@@ -61,7 +61,7 @@ RSpec.describe Icarus::Mod::Tools::Modinfo do
     end
 
     context "when files URLs are invalid" do
-      before { modinfo_data.merge!(files: { pak: "invalid" }) }
+      before { modinfo_data.merge!(files: {pak: "invalid"}) }
 
       it "returns false" do
         expect(modinfo.valid?).to be false

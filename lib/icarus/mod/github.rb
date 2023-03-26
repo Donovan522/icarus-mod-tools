@@ -34,7 +34,7 @@ module Icarus
         use_cache = @resources.any? && cache
 
         if use_cache
-          @resources.each { |file| block.call(file) } if block_given?
+          @resources.each { |file| block.call(file) } if block
         else
           @client.contents(repository, path:).each do |entry|
             if entry[:type] == "dir"
@@ -42,16 +42,16 @@ module Icarus
               next # we don't need directories in our output
             end
 
-            block.call(entry) if block_given?
+            block&.call(entry)
             @resources << entry # cache the file
           end
         end
 
-        @resources unless block_given?
+        @resources unless block
       end
 
       def find(pattern)
-        all_files { |file| return file if file[:name] =~ /#{pattern}/i }
+        all_files { |file| return file if /#{pattern}/i.match?(file[:name]) }
       end
 
       def get_contents(url)

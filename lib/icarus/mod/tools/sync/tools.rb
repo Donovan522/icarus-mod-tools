@@ -23,7 +23,7 @@ module Icarus
             @info_array ||= @firestore.toolinfo.map do |url|
               next unless url
 
-              retrieve_from_url(url)[:tools].map { |tool| Icarus::Mod::Tools::Toolinfo.new(tool) if tool[:name] =~ /[a-z0-9]+/i }
+              retrieve_from_url(url)[:tools].map { |tool| Icarus::Mod::Tools::Toolinfo.new(tool) if /[a-z0-9]+/i.match?(tool[:name]) }
             rescue Icarus::Mod::Tools::Sync::RequestFailed
               warn "Skipped; Failed to retrieve #{url}"
               next

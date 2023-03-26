@@ -92,7 +92,7 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
 
   describe "#validate" do
     it "sets @validated true" do
-      expect { baseinfo.validate }.to change { baseinfo.instance_variable_get("@validated") }.from(false).to(true)
+      expect { baseinfo.validate }.to change { baseinfo.instance_variable_get(:@validated) }.from(false).to(true)
     end
   end
 
@@ -100,7 +100,7 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
     it "calls #validate" do
       baseinfo.valid?
 
-      expect(baseinfo.instance_variable_get("@validated")).to be(true)
+      expect(baseinfo.instance_variable_get(:@validated)).to be(true)
     end
 
     context "when given valid Baseinfo data" do
@@ -183,8 +183,8 @@ RSpec.describe Icarus::Mod::Tools::Baseinfo do
 
   describe "#status" do
     before do
-      baseinfo.instance_variable_set("@errors", ["test error"])
-      baseinfo.instance_variable_set("@warnings", ["test warning"])
+      baseinfo.instance_variable_set(:@errors, ["test error"])
+      baseinfo.instance_variable_set(:@warnings, ["test warning"])
     end
 
     it "has a warnings key" do

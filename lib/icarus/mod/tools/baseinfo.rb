@@ -102,11 +102,11 @@ module Icarus
         end
 
         def method_missing(method_name, *_args, &_block)
-          @data[method_name.to_sym] if @data.keys.include?(method_name.to_sym)
+          @data[method_name.to_sym] if @data.key?(method_name.to_sym)
         end
 
         def respond_to_missing?(method_name, include_private = false)
-          @data.keys.include?(method_name.to_sym) || super
+          @data.key?(method_name.to_sym) || super
         end
 
         private
@@ -144,7 +144,7 @@ module Icarus
           if version.nil?
             @warnings << "Version was nil, it has been defaulted to 1.0"
           else
-            @warnings << "Version should be a version string" unless version =~ /^\d+[.\d+]*/
+            @warnings << "Version should be a version string" unless /^\d+[.\d+]*/.match?(version)
           end
         end
       end

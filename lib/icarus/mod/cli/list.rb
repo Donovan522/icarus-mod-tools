@@ -45,10 +45,10 @@ module Icarus
 
         no_commands do
           def list_for_type(type)
-            klass = type == :mods ? Icarus::Mod::Tools::Modinfo : Icarus::Mod::Tools::Toolinfo
+            klass = (type == :mods) ? Icarus::Mod::Tools::Modinfo : Icarus::Mod::Tools::Toolinfo
             valid_keys = klass::HASHKEYS + [:updated_at]
             sort_field = options[:sort]&.to_sym
-            filter     = !options[:filter].empty?
+            filter = !options[:filter].empty?
 
             if filter
               filter_field = options[:filter].first&.to_sym
@@ -90,7 +90,7 @@ module Icarus
             end
 
             # Sort by field, optionally subsorting by name
-            (sort_field == :name ? items.sort_by(&:name) : items.sort_by { |item| [item.send(sort_field), item.name] }).each do |item|
+            ((sort_field == :name) ? items.sort_by(&:name) : items.sort_by { |item| [item.send(sort_field), item.name] }).each do |item|
               data_format = "%-<name>50s %-<author>20s v%-<version>10s%-<updated_at>20s"
               data_format += " %-<id>20s %<description>s" if verbose > 1
 

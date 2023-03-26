@@ -54,8 +54,8 @@ RSpec.describe Icarus::Mod::Github do
 
   describe "#all_files" do
     let(:github) { described_class.new(repository) }
-    let(:file) { { name: "test.txt", type: "file" } }
-    let(:dir) { { name: "test-dir", type: "dir", path: "test/dir" } }
+    let(:file) { {name: "test.txt", type: "file"} }
+    let(:dir) { {name: "test-dir", type: "dir", path: "test/dir"} }
     let(:resources) { [file, dir] }
 
     before do
@@ -86,7 +86,7 @@ RSpec.describe Icarus::Mod::Github do
     end
 
     it "uses the resource cache if it exists" do
-      github.instance_variable_set("@resources", [file])
+      github.instance_variable_set(:@resources, [file])
       github.all_files
 
       expect(github.client).not_to have_received(:contents)
@@ -105,11 +105,11 @@ RSpec.describe Icarus::Mod::Github do
 
   describe "#find" do
     let(:pattern) { "test" }
-    let(:file) { { name: "test.txt", type: "file" } }
+    let(:file) { {name: "test.txt", type: "file"} }
 
     before do
       allow(github).to receive(:all_files).and_call_original
-      github.instance_variable_set("@resources", [file])
+      github.instance_variable_set(:@resources, [file])
     end
 
     it "calls #all_files" do
